@@ -1,0 +1,44 @@
+[maxscale]
+threads=auto
+admin_host=0.0.0.0
+admin_secure_gui=false
+admin_port=8989
+admin_auth=true
+
+# --- Definisi backend ---
+[server1]
+type=server
+address=mariadb
+port=3306
+protocol=MariaDBBackend
+
+# --- Monitor kesehatan backend ---
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+servers=server1
+user=maxscale_mon
+password=cykboq-xuzcoj-hiFza1
+monitor_interval=2s
+
+# --- Layanan utama: Read/Write Split ---
+[RW-Service]
+type=service
+router=readwritesplit
+servers=server1
+user=appuser
+password=tonseq-6paxtu-danvUj
+# Stabilitas & pengurangan koneksi backend:
+transaction_replay=true
+max_sescmd_history=1000
+connection_timeout=5s
+connection_keepalive=60s
+master_reconnection=true
+# Multiplexing (default ON utk non-trx); biarkan default
+
+# --- Listener untuk klien ---
+[RW-Listener]
+type=listener
+service=RW-Service
+protocol=MariaDBClient
+port=3306

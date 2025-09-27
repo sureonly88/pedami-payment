@@ -1,0 +1,84 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - dokploy-network
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_KEY: ${APP_KEY}
+      APP_URL: http://${APP_DOMAIN}
+      DB_CONNECTION: mysql
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - app-storage:/var/www/html/storage
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    restart: always
+    depends_on:
+      - php
+    networks:
+      - dokploy-network
+    volumes:
+      - app-storage:/var/www/html/storage
+      - ./:/var/www/html:ro
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.laravel54.rule=Host(`ppob-baru.paymentpedami.com`)"
+      - "traefik.http.routers.laravel54.entrypoints=web"
+      - "traefik.http.services.laravel54-svc.loadbalancer.server.port=80"
+
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_DB_PASSWORD}
+      MARIADB_ROOT_HOST: "%" 
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: ["mariadbd", "--skip-host-cache", "--skip-name-resolve"]
+    ulimits:
+      nofile: 1048576
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./my-tuning.cnf:/etc/mysql/conf.d/my-tuning.cnf:ro
+      - ./init-users.sql:/docker-entrypoint-initdb.d/00-init-users.sql:ro
+    networks:
+      - dokploy-network
+    #ports:
+    #  - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+    networks:
+      - dokploy-network
+
+volumes:
+  app-storage:
+  mariadb-data:
+
+networks:
+  dokploy-network:
+    external: true

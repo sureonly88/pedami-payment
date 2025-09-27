@@ -1,0 +1,52 @@
+[mariadbd]
+# --- Koneksi & network ---
+bind-address = 0.0.0.0
+skip_name_resolve = 1
+max_connections   = 800          # payung saat spike (MaxScale meredam di depan)
+back_log          = 1024
+connect_timeout   = 5
+wait_timeout      = 30
+interactive_timeout = 60
+max_allowed_packet = 256M
+thread_cache_size  = 256
+open_files_limit   = 1048576
+max_connect_errors = 1000000
+net_read_timeout   = 30
+net_write_timeout  = 30
+
+# --- InnoDB (utama) ---
+innodb_buffer_pool_size       = 10G      # ~60–65% dari 16GB
+innodb_buffer_pool_instances  = 4
+innodb_log_file_size          = 2G
+innodb_log_files_in_group     = 2
+innodb_flush_log_at_trx_commit = 1       # durabilitas transaksi (jangan ubah utk pembayaran)
+sync_binlog = 1                          # bila binlog aktif
+innodb_flush_method = O_DIRECT
+innodb_flush_neighbors = 0
+innodb_io_capacity     = 4000            # NVMe
+innodb_io_capacity_max = 8000            # NVMe
+
+# --- Per-connection buffers (hemat RAM) ---
+tmp_table_size       = 64M
+max_heap_table_size  = 64M
+sort_buffer_size     = 512K
+read_buffer_size     = 512K
+read_rnd_buffer_size = 512K
+join_buffer_size     = 512K
+
+# --- Cache tabel ---
+table_open_cache        = 12288
+table_definition_cache  = 4096
+
+# --- Binlog (aktifkan jika perlu replikasi/audit) ---
+binlog_format = ROW
+server_id = 1
+# log_bin = /var/lib/mysql/mysql-bin        # uncomment bila butuh
+# expire_logs_days = 7
+
+# --- Observabilitas ---
+performance_schema = ON
+
+# --- Thread Pool (MariaDB) ---
+thread_pool_size = 8                # 4 core -> 6–8 aman; 8 memberi headroom
+thread_pool_stall_limit = 60
