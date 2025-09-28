@@ -355,7 +355,7 @@
         methods: {
 
             LoadDataKolektif: function(){
-                axios.get("{{ url('/admin/pdam_kolektif/daftar') }}")
+                axios.get("{{ secure_url('/admin/pdam_kolektif/daftar') }}")
                     .then(function (response) {
                         if(response.data.status){
                             vmPdam.dataKolektif = response.data.data;
@@ -427,7 +427,7 @@
                 vmPdam.dataRek = [];
                 var ErrorMessage = "";
 
-                axios.get("{{ url('/admin/pdam_kolektif/kolektif') }}/"+Id)
+                axios.get("{{ secure_url('/admin/pdam_kolektif/kolektif') }}/"+Id)
                     .then(function (response) {
                         if(response.data.status){
 
@@ -450,7 +450,7 @@
                                     vmPdam.isLoading = true;
 
                                     kodeLoket = $("#loket_code").val();
-                                    vmPdam.$http.get("{{ url('/api/pdambjm') }}/get/"+IdCust+"/"+kodeLoket).then(response => {
+                                    vmPdam.$http.get("{{ secure_url('/api/pdambjm') }}/get/"+IdCust+"/"+kodeLoket).then(response => {
                                         if(response.body.status == "Success"){
                                             
                                             vmPdam.pesanLoading = "";
@@ -559,7 +559,7 @@
                 this.isLoading = true;
 
                 kodeLoket = $("#loket_code").val();
-                this.$http.get("{{ url('/api/pdambjm') }}/get/"+this.idlgn+"/"+kodeLoket).then(response => {
+                this.$http.get("{{ secure_url('/api/pdambjm') }}/get/"+this.idlgn+"/"+kodeLoket).then(response => {
                     if(response.body.status == "Success"){
                         
                         this.pesanLoading = "";
@@ -616,7 +616,7 @@
                 isPrinterBaru = $("#isPrinterBaru").is(':checked') ? 1 : 0;
                 
                 $.ajaxSetup({ cache: false });
-                $.getJSON("{{ url('/admin/cetak_ulang_baru') }}/"+Idpel+"/"+tglAwal+"/"+tglAkhir+"/"+BlnRek+"/"+isPrinterBaru+"/"+jenisKertas, function(msg){
+                $.getJSON("{{ secure_url('/admin/cetak_ulang_baru') }}/"+Idpel+"/"+tglAwal+"/"+tglAkhir+"/"+BlnRek+"/"+isPrinterBaru+"/"+jenisKertas, function(msg){
 
                     if(msg.status == "Success"){
 
@@ -878,7 +878,7 @@
 
                         vmPdam.pesanLoading += "<span><i class='fa fa-cloud-download'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES PAYMENT "+IdCust+"...</span></b><br/>";
 
-                        vmPdam.$http.post("{{ url('api/pdambjm/transaksi') }}", {
+                        vmPdam.$http.post("{{ secure_url('api/pdambjm/transaksi') }}", {
                             PaymentData: DataRekening, 
                             isPrinterBaru: isPrinterBaru,
                             jenisKertas: jenisKertas,

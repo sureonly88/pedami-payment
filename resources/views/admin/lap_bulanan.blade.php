@@ -12,7 +12,7 @@ function ctkLaporanBulanan(){
     userLoket = $("#pilUser").val();
     tglTransaksi = $("#txtTanggal").val();
 
-    window.open("{{ url('admin/ctklaporan/bulanan/') }}/"+Tahun+"/"+Bulan+"/"+Loket,'_blank');
+    window.open("{{ secure_url('admin/ctklaporan/bulanan/') }}/"+Tahun+"/"+Bulan+"/"+Loket,'_blank');
 }
 
 function getLaporanBulan(){
@@ -25,7 +25,7 @@ function getLaporanBulan(){
     }
 
     dtTable = $('#dataTable').dataTable( {
-        "ajax": "{{ url('/admin/bulanan/rekap') }}/"+Tahun+"/"+Bulan+"/"+Loket,
+        "ajax": "{{ secure_url('/admin/bulanan/rekap') }}/"+Tahun+"/"+Bulan+"/"+Loket,
         "destroy": true,
         "columns": [
             { "data": "TRANSACTION_YEAR" },
@@ -236,7 +236,7 @@ function getLaporanBulan(){
       	$(function () {
 
       		$.ajaxSetup({ cache: false });
-		    $.getJSON("{{ url('/admin/grv/rekap') }}", function(msg){
+		    $.getJSON("{{ secure_url('/admin/grv/rekap') }}", function(msg){
 		    	var areaChartData = {
 		        labels: msg.label,
 		        datasets: [

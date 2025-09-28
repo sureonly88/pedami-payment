@@ -32,7 +32,7 @@
     function LoadData(){
 
         dtTable = $('#listData').dataTable( {
-            "ajax": "{{ url('/admin/man_transaksi_pln/list') }}",
+            "ajax": "{{ secure_url('/admin/man_transaksi_pln/list') }}",
             "serverSide": true,
             "ordering": false,
             "deferRender": true,
@@ -116,7 +116,7 @@
 			'subcriber_id': $('#subcriber_id').val(),'subcriber_name': $('#subcriber_name').val(),'subcriber_segment': $('#subcriber_segment').val(),'switcher_ref': $('#switcher_ref').val(),'power_consumtion': $('#power_consumtion').val(),'trace_audit_number': $('#trace_audit_number').val(),'bill_periode': $('#bill_periode').val(),'added_tax': $('#added_tax').val(),'incentive': $('#incentive').val(),'penalty_fee': $('#penalty_fee').val(),'admin_charge': $('#admin_charge').val(),'total_elec_bill': $('#total_elec_bill').val(),'username': $('#username').val(),'loket_name': $('#loket_name').val(),'loket_code': $('#loket_code').val(),'jenis_loket': $('#jenis_loket').val(),'transaction_code': $('#transaction_code').val(),'transaction_date': $('#transaction_date').val(),'outstanding_bill': $('#outstanding_bill').val(),'bill_status': $('#bill_status').val(),'prev_meter_read_1': $('#prev_meter_read_1').val(),'curr_meter_read_1': $('#curr_meter_read_1').val(),'prev_meter_read_2': $('#prev_meter_read_2').val(),'curr_meter_read_2': $('#curr_meter_read_2').val(),'prev_meter_read_3': $('#prev_meter_read_3').val(),'curr_meter_read_3': $('#curr_meter_read_3').val()
         }
 
-        sentAjax("{{ url('/admin/man_transaksi_pln/simpan') }}",Data);    
+        sentAjax("{{ secure_url('/admin/man_transaksi_pln/simpan') }}",Data);    
     }
 
     function sentAjax(mUrl, mData){
@@ -152,7 +152,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/man_transaksi_pln/edit') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/man_transaksi_pln/edit') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
 				$('#subcriber_id').val(msg.data.subcriber_id);
@@ -204,7 +204,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/man_transaksi_pln/hapus') }}/"+mId,
+            url: "{{ secure_url('/admin/man_transaksi_pln/hapus') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

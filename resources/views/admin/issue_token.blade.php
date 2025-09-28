@@ -29,7 +29,7 @@
     </div>
     <div class="box-body">
 
-    <form action="{{ url('admin/change_passw/edit') }}" method="post">
+    <form action="{{ secure_url('admin/change_passw/edit') }}" method="post">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group">
         
@@ -65,7 +65,7 @@ $(document).ready(function() {
 
 function getToken(){
     vUsername = $("#pilUser").val();
-    axios.get("{{ url('admin/issue_token/get') }}/"+vUsername).then(function(response){
+    axios.get("{{ secure_url('admin/issue_token/get') }}/"+vUsername).then(function(response){
       console.log(response.data);
       if(response.data.status){
         $("#token").val(response.data.token);
@@ -81,7 +81,7 @@ function getToken(){
 function prosesToken(){
     vUsername = $("#pilUser").val();
 
-    axios.post("{{ url('/admin/issue_token/generate') }}", { username: vUsername })
+    axios.post("{{ secure_url('/admin/issue_token/generate') }}", { username: vUsername })
       .then(function(response){
       console.log(response.data);
       if(response.data.status){

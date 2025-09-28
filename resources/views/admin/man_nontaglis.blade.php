@@ -30,7 +30,7 @@
 
     function LoadData(){
         dtTable = $('#listData').dataTable( {
-            "ajax": "{{ url('/admin/man_nontaglis/list') }}",
+            "ajax": "{{ secure_url('/admin/man_nontaglis/list') }}",
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -77,7 +77,7 @@
 			'register_number': $('#register_number').val(),'transaction_code': $('#transaction_code').val(),'transaction_name': $('#transaction_name').val(),'registration_date': $('#registration_date').val(),'expiration_date': $('#expiration_date').val(),'subscriber_id': $('#subscriber_id').val(),'subscriber_name': $('#subscriber_name').val(),'pln_ref_number': $('#pln_ref_number').val(),'switcher_ref_number': $('#switcher_ref_number').val(),'service_unit_address': $('#service_unit_address').val(),'service_unit_phone': $('#service_unit_phone').val(),'total_transaction': $('#total_transaction').val(),'pln_bill_value': $('#pln_bill_value').val(),'admin_charge': $('#admin_charge').val(),'info_text': $('#info_text').val(),'username': $('#username').val(),'loket_name': $('#loket_name').val(),'loket_code': $('#loket_code').val(),'jenis_loket': $('#jenis_loket').val(),'transaction_date': $('#transaction_date').val(),'transaction_code_pln': $('#transaction_code_pln').val(),'trace_audit_number': $('#trace_audit_number').val()
         }
 
-        sentAjax("{{ url('/admin/man_nontaglis/simpan') }}",Data);    
+        sentAjax("{{ secure_url('/admin/man_nontaglis/simpan') }}",Data);    
     }
 
     function sentAjax(mUrl, mData){
@@ -113,7 +113,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/man_nontaglis/edit') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/man_nontaglis/edit') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
                 // $("#imei").val(msg.data.imei);
@@ -141,7 +141,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/man_nontaglis/hapus') }}/"+mId,
+            url: "{{ secure_url('/admin/man_nontaglis/hapus') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

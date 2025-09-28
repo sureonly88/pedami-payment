@@ -22,7 +22,7 @@
     </div>
     <div class="box-body">
 
-    <form action="{{ url('admin/change_passw/edit') }}" method="post">
+    <form action="{{ secure_url('admin/change_passw/edit') }}" method="post">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group">
         

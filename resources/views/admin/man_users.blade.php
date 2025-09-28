@@ -33,7 +33,7 @@
 
     function LoadUsers(){
         dtTable = $('#usersTable').dataTable( {
-            "ajax": "{{ url('/admin/users/get_all') }}",
+            "ajax": "{{ secure_url('/admin/users/get_all') }}",
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -74,9 +74,9 @@
 
         mId = $("#Id").val();
         if(mId.length > 0){
-            sentAjax("{{ url('/admin/users/update') }}/"+mId,DtUser);
+            sentAjax("{{ secure_url('/admin/users/update') }}/"+mId,DtUser);
         }else{
-            sentAjax("{{ url('/admin/users/add') }}",DtUser);
+            sentAjax("{{ secure_url('/admin/users/add') }}",DtUser);
         }    
     }
 
@@ -113,7 +113,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/users/get') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/users/get') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
                 $("#Username").val(msg.data.username);
@@ -159,7 +159,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/users/close_conn') }}/"+mId,
+            url: "{{ secure_url('/admin/users/close_conn') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })
@@ -185,7 +185,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/users/delete') }}/"+mId,
+            url: "{{ secure_url('/admin/users/delete') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

@@ -36,7 +36,7 @@
 
     function LoadData(vStat){
         dtTable = $('#listData').dataTable( {
-            "ajax": "{{ url('/admin/admin_saldo/list') }}"+"/"+vStat,
+            "ajax": "{{ secure_url('/admin/admin_saldo/list') }}"+"/"+vStat,
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -131,7 +131,7 @@
             'kode_loket_tujuan': $('#kode_loket').val()
         }
 
-        sentAjax("{{ url('/admin/admin_saldo/simpan') }}",Data, "divPesan");    
+        sentAjax("{{ secure_url('/admin/admin_saldo/simpan') }}",Data, "divPesan");    
     }
 
     function sentAjax(mUrl, mData, elementPesan){

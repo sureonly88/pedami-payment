@@ -43,10 +43,10 @@
         var user = $("#userFilter").val();
 
         if(excel == 1){
-            window.open("{{ url('/admin/topups/get_all') }}/"+tgl+"/"+loket+"/"+user+"/"+excel);
+            window.open("{{ secure_url('/admin/topups/get_all') }}/"+tgl+"/"+loket+"/"+user+"/"+excel);
         }else{
             dtTable = $('#usersTable').dataTable( {
-                "ajax": "{{ url('/admin/topups/get_all') }}/"+tgl+"/"+loket+"/"+user+"/"+excel,
+                "ajax": "{{ secure_url('/admin/topups/get_all') }}/"+tgl+"/"+loket+"/"+user+"/"+excel,
                 "serverSide": true,
                 "ordering": false,
                 "deferRender": true,
@@ -98,7 +98,7 @@
             "tujuan_dana": $("#tujuan_dana").val()
         }
 
-        sentAjax("{{ url('/admin/topups/add') }}",DtUser);
+        sentAjax("{{ secure_url('/admin/topups/add') }}",DtUser);
 
     }
 

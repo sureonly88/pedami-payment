@@ -36,7 +36,7 @@
 
     function LoadData(){
         dtTable = $('#listData').dataTable( {
-            "ajax": "{{ url('/admin/request_saldo/list') }}",
+            "ajax": "{{ secure_url('/admin/request_saldo/list') }}",
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -136,7 +136,7 @@
             'ket_konfirmasi': $('#ket_konfirmasi').val()
         }
 
-        sentAjax("{{ url('/admin/request_saldo/konfirmasi') }}",Data, "divPesanKonfirmasi");    
+        sentAjax("{{ secure_url('/admin/request_saldo/konfirmasi') }}",Data, "divPesanKonfirmasi");    
     }
 
     function simpanData(){
@@ -149,7 +149,7 @@
             'ket_request': $('#ket_request').val()
         }
 
-        sentAjax("{{ url('/admin/request_saldo/simpan') }}",Data, "divPesan");    
+        sentAjax("{{ secure_url('/admin/request_saldo/simpan') }}",Data, "divPesan");    
     }
 
     function sentAjax(mUrl, mData, elementPesan){
@@ -190,7 +190,7 @@
         $("#kodeRequest").val(kodeRequest);
 
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('/admin/request_saldo/get') }}/"+kodeRequest, function(msg){
+        $.getJSON("{{ secure_url('/admin/request_saldo/get') }}/"+kodeRequest, function(msg){
             if(msg.status == "Success"){
 
                 $("#tgl_bayar").val(msg.data.tgl_bayar);

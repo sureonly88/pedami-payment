@@ -91,7 +91,7 @@ function ProsesCetakUlang(){
 	}
 	
     $.ajaxSetup({ cache: false });
-    $.getJSON("{{ url('/admin/cetak_ulang') }}/"+Idpel+"/"+Tgl_Transaksi+"/"+BlnRek, function(msg){
+    $.getJSON("{{ secure_url('/admin/cetak_ulang') }}/"+Idpel+"/"+Tgl_Transaksi+"/"+BlnRek, function(msg){
         closeDialogNoCancel();
         if(msg.status == "Success"){
             for (index = msg.data.length - 1; index >= 0; --index) {
@@ -174,7 +174,7 @@ function getPelanggan(e){
 
     showDialogNoCancel("GETTING CUSTOMER DATA...");
     $.ajaxSetup({ cache: false });
-    $.getJSON("{{ url('/api/pdambjm') }}/get/"+Idpel+"/"+LoketCode, function(data){
+    $.getJSON("{{ secure_url('/api/pdambjm') }}/get/"+Idpel+"/"+LoketCode, function(data){
         closeDialogNoCancel();
         if(data.status == "Success"){
             cekError = data.data[0]['status'];
@@ -379,7 +379,7 @@ function Payment(){
     }
 
    //showDialogNoCancel("Checking Pulsa...");
-   $.getJSON("{{ url('/admin/pulsa') }}/"+$("#loket_code").val()+"/"+$("#total").val(), function(data){
+   $.getJSON("{{ secure_url('/admin/pulsa') }}/"+$("#loket_code").val()+"/"+$("#total").val(), function(data){
         if(data.status == "Success"){
            //closeDialogNoCancel();
            ProsesPayment();
@@ -520,7 +520,7 @@ function ProsesPayment(){
 
             $.ajax({
                 method: "POST",
-                url: "{{ url('api/pdambjm/transaksi') }}",
+                url: "{{ secure_url('api/pdambjm/transaksi') }}",
                 data: { PaymentData: DataRekening,
                        _token: "{{ csrf_token() }}" }
             })

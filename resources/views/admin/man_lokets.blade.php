@@ -42,7 +42,7 @@
 
     function LoadUsers(){
         dtTable = $('#usersTable').dataTable( {
-            "ajax": "{{ url('/admin/lokets/get_all') }}",
+            "ajax": "{{ secure_url('/admin/lokets/get_all') }}",
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -94,9 +94,9 @@
 
         mId = $("#Id").val();
         if(mId.length > 0){
-            sentAjax("{{ url('/admin/lokets/update') }}/"+mId,DtUser);
+            sentAjax("{{ secure_url('/admin/lokets/update') }}/"+mId,DtUser);
         }else{
-            sentAjax("{{ url('/admin/lokets/add') }}",DtUser);
+            sentAjax("{{ secure_url('/admin/lokets/add') }}",DtUser);
         }    
     }
 
@@ -136,7 +136,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/lokets/get') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/lokets/get') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
                 $("#nama").val(msg.data.nama);
@@ -178,7 +178,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/lokets/delete') }}/"+mId,
+            url: "{{ secure_url('/admin/lokets/delete') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

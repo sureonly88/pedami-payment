@@ -32,7 +32,7 @@
     function LoadData(){
 
         dtTable = $('#listData').dataTable( {
-            "ajax": "{{ url('/admin/man_pln_prepaid/list') }}",
+            "ajax": "{{ secure_url('/admin/man_pln_prepaid/list') }}",
             "serverSide": true,
             "ordering": false,
             "deferRender": true,
@@ -87,7 +87,7 @@
 			'subscriber_id': $('#subscriber_id').val(),'material_number': $('#material_number').val(),'subscriber_name': $('#subscriber_name').val(),'subscriber_segment': $('#subscriber_segment').val(),'power_categori': $('#power_categori').val(),'switcher_ref_number': $('#switcher_ref_number').val(),'pln_ref_number': $('#pln_ref_number').val(),'token_number': $('#token_number').val(),'trace_audit_number': $('#trace_audit_number').val(),'vending_recieve_number': $('#vending_recieve_number').val(),'max_kwh': $('#max_kwh').val(),'purchase_kwh': $('#purchase_kwh').val(),'info_text': $('#info_text').val(),'stump_duty': $('#stump_duty').val(),'ligthingtax': $('#ligthingtax').val(),'cust_payable': $('#cust_payable').val(),'admin_charge': $('#admin_charge').val(),'addtax': $('#addtax').val(),'username': $('#username').val(),'loket_name': $('#loket_name').val(),'loket_code': $('#loket_code').val(),'jenis_loket': $('#jenis_loket').val(),'transaction_code': $('#transaction_code').val(),'transaction_date': $('#transaction_date').val(),'power_purchase': $('#power_purchase').val(),'rupiah_token': $('#rupiah_token').val()
         }
 
-        sentAjax("{{ url('/admin/man_pln_prepaid/simpan') }}",Data);    
+        sentAjax("{{ secure_url('/admin/man_pln_prepaid/simpan') }}",Data);    
     }
 
     function sentAjax(mUrl, mData){
@@ -123,7 +123,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/man_pln_prepaid/edit') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/man_pln_prepaid/edit') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
                 // $("#imei").val(msg.data.imei);
@@ -151,7 +151,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/man_pln_prepaid/hapus') }}/"+mId,
+            url: "{{ secure_url('/admin/man_pln_prepaid/hapus') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

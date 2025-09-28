@@ -35,14 +35,14 @@ function cetakLaporan(){
 	TglAwal = $("#txtTglAwal").val();
 	TglAkhir = $("#txtTglAkhir").val();
 	KodeLoket = $("#pilLoket").val();
-    window.open("{{ url('admin/lap_android/laporan/cetak') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket,'_blank');
+    window.open("{{ secure_url('admin/lap_android/laporan/cetak') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket,'_blank');
 }
 
 function exportLaporan(){
 	TglAwal = $("#txtTglAwal").val();
 	TglAkhir = $("#txtTglAkhir").val();
 	KodeLoket = $("#pilLoket").val();
-    window.open("{{ url('admin/lap_android/laporan/export') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket,'_blank');
+    window.open("{{ secure_url('admin/lap_android/laporan/export') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket,'_blank');
 }
 
 function tampilData(){
@@ -50,7 +50,7 @@ function tampilData(){
 	TglAkhir = $("#txtTglAkhir").val();
 	KodeLoket = $("#pilLoket").val();
     dtTable = $('#dataTableDetail').dataTable( {
-        "ajax": "{{ url('admin/lap_android/laporan') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket,
+        "ajax": "{{ secure_url('admin/lap_android/laporan') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket,
         "destroy": true,
         "columns": [
             { "data": "CUST_ID" },
@@ -118,7 +118,7 @@ function openDialogSearch(){
 	dialogSearch.dialog("open");
 
 	dtTable = $('#dataSearch').dataTable( {
-        "ajax": "{{ url('admin/get_lokets') }}",
+        "ajax": "{{ secure_url('admin/get_lokets') }}",
         "destroy": true,
         "columns": [
             { 

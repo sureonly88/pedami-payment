@@ -101,7 +101,7 @@ $(document).ready(function() {
             },
 
             prosesBil: function () {
-                this.$http.get("{{ url('api/pln/prepaid/cetak_ulang') }}/"+vmCU.idpel).then(response => {
+                this.$http.get("{{ secure_url('api/pln/prepaid/cetak_ulang') }}/"+vmCU.idpel).then(response => {
                     console.log(response.body);
 
                     if(response.body.status){

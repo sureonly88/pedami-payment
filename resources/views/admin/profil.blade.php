@@ -8,7 +8,7 @@ $( document ).ready(function() {
 	var Role = "{{$user['role']}}";
 	
 	dtLog = $('#historyLog').dataTable( {
-        "ajax": "{{ url('admin/loghistory/') }}/"+KodeLoket,
+        "ajax": "{{ secure_url('admin/loghistory/') }}/"+KodeLoket,
         "destroy": true,
         "columns": [
             { "data": "CREATED_AT" },

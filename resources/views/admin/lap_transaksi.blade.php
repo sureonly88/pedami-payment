@@ -233,7 +233,7 @@
 function cetakSetoran(){
 	TglAwal = $("#txtTglAwal").val();
 	TglAkhir = $("#txtTglAkhir").val();
-    window.open("{{ url('admin/setoran') }}/"+TglAwal+"/"+TglAkhir,'_blank','width=880,height=500,titlebar=0,status=0');
+    window.open("{{ secure_url('admin/setoran') }}/"+TglAwal+"/"+TglAkhir,'_blank','width=880,height=500,titlebar=0,status=0');
 }
 
 function cetakRekapHarian(){
@@ -254,7 +254,7 @@ function cetakRekapHarian(){
 
 	TglAwal = $("#txtTglAwal").val();
 	TglAkhir = $("#txtTglAkhir").val();
-    window.open("{{ url('admin/lap_transaksi/rekap') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/pdf",'_blank');
+    window.open("{{ secure_url('admin/lap_transaksi/rekap') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/pdf",'_blank');
 }
 
 function exporRekapHarian(){
@@ -275,21 +275,21 @@ function exporRekapHarian(){
 
 	TglAwal = $("#txtTglAwal").val();
 	TglAkhir = $("#txtTglAkhir").val();
-    window.open("{{ url('admin/lap_transaksi/rekap') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/excel",'_blank');
+    window.open("{{ secure_url('admin/lap_transaksi/rekap') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/excel",'_blank');
 }
 
 function exporDetailHarian(tanggal,kodeloket,jenis_transaksi,user){
-    window.open("{{ url('admin/lap_transaksi/detail') }}/"+tanggal+"/"+kodeloket+"/"+user+"/"+jenis_transaksi+"/excel",'_blank');
+    window.open("{{ secure_url('admin/lap_transaksi/detail') }}/"+tanggal+"/"+kodeloket+"/"+user+"/"+jenis_transaksi+"/excel",'_blank');
 }
 
 function cetakDetailHarian(tanggal,kodeloket,jenis_transaksi,user){
-    window.open("{{ url('admin/lap_transaksi/detail') }}/"+tanggal+"/"+kodeloket+"/"+user+"/"+jenis_transaksi+"/pdf",'_blank');
+    window.open("{{ secure_url('admin/lap_transaksi/detail') }}/"+tanggal+"/"+kodeloket+"/"+user+"/"+jenis_transaksi+"/pdf",'_blank');
 }
 
 function prosesDetail(tanggal,kodeloket,jenis_transaksi,user) {
 
 	dtTable = $('#detailTable').dataTable( {
-        "ajax": "{{ url('admin/lap_transaksi/detail') }}/"+tanggal+"/"+kodeloket+"/"+user+"/"+jenis_transaksi+"/grid",
+        "ajax": "{{ secure_url('admin/lap_transaksi/detail') }}/"+tanggal+"/"+kodeloket+"/"+user+"/"+jenis_transaksi+"/grid",
         "destroy": true,
         "columns": [
             { "data": "idpel" },
@@ -391,7 +391,7 @@ $(document).ready(function() {
 				TglAkhir = $("#txtTglAkhir").val();
 
 				dtTable = $('#rekapTable').dataTable( {
-			        "ajax": "{{ url('admin/lap_transaksi/rekap') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/grid",
+			        "ajax": "{{ secure_url('admin/lap_transaksi/rekap') }}/"+TglAwal+"/"+TglAkhir+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/grid",
 			        "destroy": true,
 			        "columns": [
 			        	{ "data": "" },

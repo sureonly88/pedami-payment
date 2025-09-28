@@ -83,7 +83,7 @@
         mValue  = "-";
 
         dtTable = $('#usersTable').dataTable( {
-            "ajax": "{{ url('/admin/managepdambjm/get_all') }}/"+mValue,
+            "ajax": "{{ secure_url('/admin/managepdambjm/get_all') }}/"+mValue,
             "serverSide": true,
             "ordering": false,
             "deferRender": true,
@@ -184,9 +184,9 @@
 
         mId = $("#id").val();
         if(mId.length > 0){
-            sentAjax("{{ url('/admin/managepdambjm/update') }}/"+mId,DtUser);
+            sentAjax("{{ secure_url('/admin/managepdambjm/update') }}/"+mId,DtUser);
         }else{
-            sentAjax("{{ url('/admin/managepdambjm/add') }}",DtUser);
+            sentAjax("{{ secure_url('/admin/managepdambjm/add') }}",DtUser);
         }    
     }
 
@@ -223,7 +223,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/managepdambjm/get') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/managepdambjm/get') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $('#id').val(msg.data.id);
                 $('#transaction_code').val(msg.data.transaction_code);
@@ -277,7 +277,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/managepdambjm/delete') }}/"+mId,
+            url: "{{ secure_url('/admin/managepdambjm/delete') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })
@@ -301,7 +301,7 @@
     function getLoket(){
         mUsername = $("#username").val();
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/managepdambjm/info_loket') }}/"+mUsername, function(msg){
+        $.getJSON("{{ secure_url('admin/managepdambjm/info_loket') }}/"+mUsername, function(msg){
             if(msg.status == "Success"){
                 $('#loket_name').val(msg.data.nama);
                 $('#loket_code').val(msg.data.loket_code);

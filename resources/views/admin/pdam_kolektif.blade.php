@@ -197,7 +197,7 @@ $(document).ready(function() {
 	    	},
 
 	    	LoadDataKolektif: function(){
-	    		axios.get("{{ url('/admin/pdam_kolektif/daftar') }}")
+	    		axios.get("{{ secure_url('/admin/pdam_kolektif/daftar') }}")
 				    .then(function (response) {
 				    	if(response.data.status){
 				    		vmKolektif.dataKolektif = response.data.data;
@@ -212,7 +212,7 @@ $(document).ready(function() {
 	    	},
 
 	    	LoadDetailKolektif: function(vId){
-	    		axios.get("{{ url('/admin/pdam_kolektif/kolektif') }}/"+vId)
+	    		axios.get("{{ secure_url('/admin/pdam_kolektif/kolektif') }}/"+vId)
 				    .then(function (response) {
 				    	if(response.data.status){
 				    		vmKolektif.dataDetail = response.data.data;
@@ -236,7 +236,7 @@ $(document).ready(function() {
 	    	delDetail: function(vId){
 	    		vmKolektif.messageDetail = "";
 
-	    		axios.post("{{ url('/admin/pdam_kolektif/aksi_detail') }}", {
+	    		axios.post("{{ secure_url('/admin/pdam_kolektif/aksi_detail') }}", {
 				    id_pelanggan: '-',
 				    nama_pelanggan: '-',
 				    id_kolektif: '-',
@@ -260,7 +260,7 @@ $(document).ready(function() {
 	    	editKolektif: function(vId){
 	    		vmKolektif.message = "";
 
-	    		axios.get("{{ url('/admin/pdam_kolektif/get') }}/"+vId)
+	    		axios.get("{{ secure_url('/admin/pdam_kolektif/get') }}/"+vId)
 				    .then(function (response) {
 				    	if(response.data.status){
 				    		vmKolektif.namaKolektif = response.data.data.nama;
@@ -279,7 +279,7 @@ $(document).ready(function() {
 	    	delKolektif: function(vId){
 	    		vmKolektif.message = "";
 
-	    		axios.post("{{ url('/admin/pdam_kolektif/aksi') }}", {
+	    		axios.post("{{ secure_url('/admin/pdam_kolektif/aksi') }}", {
                     nama_kolektif: '-',
                     id: vId,
                     aksi: 'delete'
@@ -310,7 +310,7 @@ $(document).ready(function() {
 
 	    		vmKolektif.message = "";
 
-	    		axios.post("{{ url('/admin/pdam_kolektif/aksi') }}", {
+	    		axios.post("{{ secure_url('/admin/pdam_kolektif/aksi') }}", {
 				    nama_kolektif: vmKolektif.namaKolektif,
 				    id: vmKolektif.idKolektif,
 				    aksi: aksi
@@ -334,7 +334,7 @@ $(document).ready(function() {
 
 	    		vmKolektif.messageDetail = "";
 
-	    		axios.post("{{ url('/admin/pdam_kolektif/aksi_detail') }}", {
+	    		axios.post("{{ secure_url('/admin/pdam_kolektif/aksi_detail') }}", {
 				    id_pelanggan: vmKolektif.idpel,
 				    nama_pelanggan: vmKolektif.namaPelanggan,
 				    id_kolektif: vmKolektif.idDetailKolektif,

@@ -19,7 +19,7 @@ function saveLoket(){
 
     $.ajax({
         method: "POST",
-        url: "{{ url('/admin/lokets') }}",
+        url: "{{ secure_url('/admin/lokets') }}",
         data: { id: cId,
                 nama: cNama,
                 alamat: cAlamat,
@@ -48,7 +48,7 @@ function Empty(){
 
 function getListLokets(){
     dtTable = $('#dataTable').dataTable( {
-        "ajax": "{{ url('admin/lokets/list') }}",
+        "ajax": "{{ secure_url('admin/lokets/list') }}",
         "destroy": true,
         "columns": [
             { "data": "nama" },
@@ -63,7 +63,7 @@ function getListLokets(){
 }
 
 function editLoket(id){
-    $.getJSON("{{ url('/admin/lokets/get') }}"+"/"+id, function(data){
+    $.getJSON("{{ secure_url('/admin/lokets/get') }}"+"/"+id, function(data){
         if(data.status == "Success"){
             $("#id").val(id);
             $("#nama").val(data.data.nama);

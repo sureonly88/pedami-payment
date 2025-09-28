@@ -262,7 +262,7 @@ $(document).ready(function() {
 				vFlag = $("#pilSelisih").val();
 
 				dtTable = $('#rekonData').dataTable( {
-		            "ajax": "{{ url('/admin/rekon_pln/proses') }}/"+vTanggal+"/"+vFlag+"/"+vJenis,
+		            "ajax": "{{ secure_url('/admin/rekon_pln/proses') }}/"+vTanggal+"/"+vFlag+"/"+vJenis,
 		            "destroy": true,
 		            "columns": [
 		                { "data": '' },
@@ -327,7 +327,7 @@ $(document).ready(function() {
                 vmRekon.isLoadingFtp = true;
                 vmRekon.pesanProses = "<b class='text-yellow'>PROSES PENGECEKAN FILE REKON...</b>";
 
-                this.$http.get("{{ url('admin/rekon_pln/cek/') }}/"+vmRekon.pilJenisFtp+"/"+vmRekon.BulanFtp+"/"+vmRekon.TahunFtp).then(response => {
+                this.$http.get("{{ secure_url('admin/rekon_pln/cek/') }}/"+vmRekon.pilJenisFtp+"/"+vmRekon.BulanFtp+"/"+vmRekon.TahunFtp).then(response => {
                     //console.log(response.body);
                     vmRekon.isLoadingFtp = false;
                     vmRekon.dataRekon = response.body.data;
@@ -344,7 +344,7 @@ $(document).ready(function() {
                 vmRekon.isLoadingFtp = true;
                 vmRekon.pesanProses = "<b class='text-yellow'>PROSES TRANSFER REKON...</b>";
 
-                vmRekon.$http.post("{{ url('/admin/rekon_pln/rekon') }}", { 
+                vmRekon.$http.post("{{ secure_url('/admin/rekon_pln/rekon') }}", { 
                     path: filePath,
                     jenis: jenis,
                     _token: "{{ csrf_token() }}"
@@ -369,7 +369,7 @@ $(document).ready(function() {
 function cancelPayment(id){
     vJenis = $("#pilJenis").val();
 
-    axios.post("{{ url('/admin/rekon_pln/cancel') }}", { id: id, jenis: vJenis })
+    axios.post("{{ secure_url('/admin/rekon_pln/cancel') }}", { id: id, jenis: vJenis })
       .then(function(response){
         console.log(response);
       }).catch(function (error) {

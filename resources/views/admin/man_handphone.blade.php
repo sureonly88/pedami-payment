@@ -42,7 +42,7 @@
 
     function LoadUsers(){
         dtTable = $('#usersTable').dataTable( {
-            "ajax": "{{ url('/admin/register_hps/get_all') }}",
+            "ajax": "{{ secure_url('/admin/register_hps/get_all') }}",
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -74,9 +74,9 @@
 
         mId = $("#Id").val();
         if(mId.length > 0){
-            sentAjax("{{ url('/admin/register_hps/update') }}/"+mId,DtUser);
+            sentAjax("{{ secure_url('/admin/register_hps/update') }}/"+mId,DtUser);
         }else{
-            sentAjax("{{ url('/admin/register_hps/add') }}",DtUser);
+            sentAjax("{{ secure_url('/admin/register_hps/add') }}",DtUser);
         }    
     }
 
@@ -113,7 +113,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/register_hps/get') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/register_hps/get') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
                 $("#imei").val(msg.data.imei);
@@ -144,7 +144,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/register_hps/delete') }}/"+mId,
+            url: "{{ secure_url('/admin/register_hps/delete') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

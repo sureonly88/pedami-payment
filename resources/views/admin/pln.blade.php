@@ -180,7 +180,7 @@ $(document).ready(function() {
 				var tglAwal = $("#txtTglAwal").val();
 				var tglAkhir = $("#txtTglAkhir").val();
 
-				this.$http.get("{{ url('api/pln/postpaid/cetak_ulang') }}/"+vmPln.ulangIdpel+"/"+tglAwal+"/"+tglAkhir).then(response => {
+				this.$http.get("{{ secure_url('api/pln/postpaid/cetak_ulang') }}/"+vmPln.ulangIdpel+"/"+tglAwal+"/"+tglAkhir).then(response => {
 					if(response.body.status){
 						mData = response.body.data;
 						//mData.switcher_ref = "CU-"+mData.switcher_ref;
@@ -319,7 +319,7 @@ $(document).ready(function() {
 				//$('#modalLoading').modal("show");
 				vmPln.pesanSpan = "<span><i class='fa fa-cloud-download'></i>&nbsp;&nbsp;&nbsp;<b>PENGECEKAN TAGIHAN PELANGGAN...</b></span>";
 
-				this.$http.get("{{ url('api/pln/postpaid/request') }}/"+vmPln.nopelanggan).then(response => {
+				this.$http.get("{{ secure_url('api/pln/postpaid/request') }}/"+vmPln.nopelanggan).then(response => {
 				  //$('#modalLoading').modal("hide");
 
 				  //console.log(response.body);
@@ -396,7 +396,7 @@ $(document).ready(function() {
       					vmPln.pesanSpan += "<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES PEMBAYARAN NO.PEL : "+mData.subcriber_id+" A/N "+mData.subcriber_name+"</b></span><br/>";
 
       					nTotalBayar = parseInt(vmPln.totalTagihan.replace(/,/g,"",-1));
-      					vmPln.$http.post("{{ url('api/pln/postpaid/payment') }}", {subcriber_id: mData.subcriber_id, payment_message: mData.payment_message, total_bayar: nTotalBayar, _token: "{{ csrf_token() }}" }).then(response => {
+      					vmPln.$http.post("{{ secure_url('api/pln/postpaid/payment') }}", {subcriber_id: mData.subcriber_id, payment_message: mData.payment_message, total_bayar: nTotalBayar, _token: "{{ csrf_token() }}" }).then(response => {
 
       						//console.log(response.body);
 
@@ -425,7 +425,7 @@ $(document).ready(function() {
 	      								//DO FIRST REVERSAL
 		      							vmPln.pesanSpan +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES REVERSAL / PEMBATALAN KE 1...</b></span><br/>";
 
-			      						vmPln.$http.post("{{ url('api/pln/postpaid/reversal') }}", {
+			      						vmPln.$http.post("{{ secure_url('api/pln/postpaid/reversal') }}", {
 			      							subcriber_id: mData.subcriber_id, 
 			      							payment_message: mData.reversal_message,
 			      							number_request:1,
@@ -450,7 +450,7 @@ $(document).ready(function() {
 
 			      									vmPln.pesanSpan +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES REVERSAL / PEMBATALAN KE 2...</b></span><br/>";
 				      								//DO SECOND REVERSAL
-				      								vmPln.$http.post("{{ url('api/pln/postpaid/reversal') }}", {
+				      								vmPln.$http.post("{{ secure_url('api/pln/postpaid/reversal') }}", {
 						      							subcriber_id: mData.subcriber_id, 
 						      							payment_message: mData.reversal_message,
 						      							number_request:2,

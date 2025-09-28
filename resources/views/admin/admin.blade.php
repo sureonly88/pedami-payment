@@ -9,7 +9,7 @@
 
 	function LoadUsers(){
         dtTable = $('#beritaTable').dataTable( {
-            "ajax": "{{ url('/admin/berita/list') }}",
+            "ajax": "{{ secure_url('/admin/berita/list') }}",
             "destroy": true,
             "columns": [
                 { "data": "judul" },

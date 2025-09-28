@@ -365,7 +365,7 @@ option {
 				},
 
 				LoadDataKolektif: function(){
-					axios.get("{{ url('/admin/pdam_kolektif/daftar') }}")
+					axios.get("{{ secure_url('/admin/pdam_kolektif/daftar') }}")
 						.then(function (response) {
 							if(response.data.status){
 								vm.dataKolektif = response.data.data;
@@ -386,7 +386,7 @@ option {
 					//vmPdam.dataRek = [];
                 	//var ErrorMessage = "";
 
-					axios.get("{{ url('/admin/pdam_kolektif/kolektif') }}/"+Id)
+					axios.get("{{ secure_url('/admin/pdam_kolektif/kolektif') }}/"+Id)
                     .then(function (response) {
                         if(response.data.status){
 
@@ -430,7 +430,7 @@ option {
 									//console.log(JenisTrx + "-" + IdCust);
 									nIdlgn = IdCust.split("-")[0];
 
-									vm.$http.get("{{ url('/api/transaksi_bayar') }}/inquery/"+nIdlgn+"/"+nJenis+"/"+kodeLoket+"/"+pilToken).then(response => {
+									vm.$http.get("{{ secure_url('/api/transaksi_bayar') }}/inquery/"+nIdlgn+"/"+nJenis+"/"+kodeLoket+"/"+pilToken).then(response => {
 										if(response.body.status){
 											
 											vm.pesanLoading = "";
@@ -536,7 +536,7 @@ option {
 					var tglAkhir 	= $("#txtTglAkhir").val();
 					var produk 		= $("#pilProduk").val();
 
-					this.$http.get("{{ url('api/transaksi_bayar/cetak_ulang') }}/"+vm.ulangIdpel+"/"+tglAwal+"/"+tglAkhir+"/"+vm.cuProduk).then(response => {
+					this.$http.get("{{ secure_url('api/transaksi_bayar/cetak_ulang') }}/"+vm.ulangIdpel+"/"+tglAwal+"/"+tglAkhir+"/"+vm.cuProduk).then(response => {
 						if(response.body.status){
 							mData = response.body.data;
 							switch(response.body.produk){
@@ -599,7 +599,7 @@ option {
 	                pilJenis = $("#pilJenis").val();
 	                pilToken = $("#pilToken").val();
 
-	                this.$http.get("{{ url('/api/transaksi_bayar') }}/inquery/"+this.idlgn+"/"+pilJenis+"/"+kodeLoket+"/"+pilToken).then(response => {
+	                this.$http.get("{{ secure_url('/api/transaksi_bayar') }}/inquery/"+this.idlgn+"/"+pilJenis+"/"+kodeLoket+"/"+pilToken).then(response => {
 	                    if(response.body.status){
 	                        
 	                        this.pesanLoading = "";
@@ -749,7 +749,7 @@ option {
 
 	            	jenisKertas = $("#jenisKertas").val();
 
-	            	this.$http.post("{{ url('api/pdambjm/transaksi') }}", {
+	            	this.$http.post("{{ secure_url('api/pdambjm/transaksi') }}", {
                             PaymentData: DataRekening, 
                             isPrinterBaru: 1,
                             jenisKertas: jenisKertas,
@@ -786,7 +786,7 @@ option {
 	            	nTotalBayar = dataRek.total_tagihan;
 	            	subcriber_id = dataRek.subcriber_id;
 
-  					this.$http.post("{{ url('api/pln/postpaid/payment') }}", {
+  					this.$http.post("{{ secure_url('api/pln/postpaid/payment') }}", {
   						subcriber_id: subcriber_id, 
   						payment_message: payment_message, 
   						total_bayar: nTotalBayar, 
@@ -818,7 +818,7 @@ option {
       								//DO FIRST REVERSAL
 	      							vm.pesanLoading +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES REVERSAL / PEMBATALAN KE 1...</b></span><br/>";
 
-		      						vm.$http.post("{{ url('api/pln/postpaid/reversal') }}", {
+		      						vm.$http.post("{{ secure_url('api/pln/postpaid/reversal') }}", {
 		      							subcriber_id: subcriber_id, 
 		      							payment_message: reversal_message,
 		      							number_request:1,
@@ -843,7 +843,7 @@ option {
 
 		      									vm.pesanLoading +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES REVERSAL / PEMBATALAN KE 2...</b></span><br/>";
 			      								//DO SECOND REVERSAL
-			      								vm.$http.post("{{ url('api/pln/postpaid/reversal') }}", {
+			      								vm.$http.post("{{ secure_url('api/pln/postpaid/reversal') }}", {
 					      							subcriber_id: subcriber_id, 
 					      							payment_message: reversal_message,
 					      							number_request:2,
@@ -885,7 +885,7 @@ option {
 
 	            	subscriber_id = dataRek.subscriber_id;
 
-  					this.$http.post("{{ url('api/pln/prepaid/purchase') }}", {
+  					this.$http.post("{{ secure_url('api/pln/prepaid/purchase') }}", {
   						idpel: subscriber_id, 
   						payment_message: purchase_message, 
   						rupiah_token: jmlToken, 
@@ -919,7 +919,7 @@ option {
 
       								vm.pesanLoading +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES ULANG PEMBELIAN KE 1...</b></span><br/>";
 
-      								vm.$http.post("{{ url('api/pln/prepaid/advise') }}", {
+      								vm.$http.post("{{ secure_url('api/pln/prepaid/advise') }}", {
       									idpel: subscriber_id, 
       									reversal_message: reversal_message, 
       									rupiah_token: jmlToken, 
@@ -950,7 +950,7 @@ option {
 
 	      											vm.pesanLoading +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES ULANG PEMBELIAN KE 2...</b></span><br/>";
 
-				      								vm.$http.post("{{ url('api/pln/prepaid/advise') }}", {
+				      								vm.$http.post("{{ secure_url('api/pln/prepaid/advise') }}", {
 				      									idpel: subscriber_id, 
 				      									reversal_message: reversal_message, 
 				      									rupiah_token: jmlToken, 
@@ -1016,7 +1016,7 @@ option {
 
 	            	register_number = dataRek.register_number;
 
-  					this.$http.post("{{ url('api/pln/nontaglis/payment') }}", {
+  					this.$http.post("{{ secure_url('api/pln/nontaglis/payment') }}", {
   						register_number: register_number, 
   						payment_message: payment_message, 
   						total_bayar: nTotalBayar, 
@@ -1049,7 +1049,7 @@ option {
       								//DO FIRST REVERSAL
 	      							vm.pesanLoading +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES REVERSAL / PEMBATALAN KE 1...</b></span><br/>";
 
-		      						vm.$http.post("{{ url('api/pln/nontaglis/reversal') }}", {
+		      						vm.$http.post("{{ secure_url('api/pln/nontaglis/reversal') }}", {
 		      							register_number: register_number, 
 		      							reversal_message: reversal_message,
 		      							number_request: 1,
@@ -1074,7 +1074,7 @@ option {
 
 		      									vm.pesanLoading +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES REVERSAL / PEMBATALAN KE 2...</b></span><br/>";
 			      								//DO SECOND REVERSAL
-			      								vm.$http.post("{{ url('api/pln/nontaglis/reversal') }}", {
+			      								vm.$http.post("{{ secure_url('api/pln/nontaglis/reversal') }}", {
 					      							register_number: register_number, 
 					      							reversal_message: reversal_message,
 					      							number_request: 2,

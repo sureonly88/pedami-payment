@@ -29,7 +29,7 @@
     </div>
     <div class="box-body">
 
-    <form action="{{ url('admin/change_passw/edit') }}" method="post">
+    <form action="{{ secure_url('admin/change_passw/edit') }}" method="post">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group">
         
@@ -96,7 +96,7 @@ function getLoket(){
       return;
     }
 
-    axios.get("{{ url('admin/akses_rek_pdam/get') }}/"+vLoket).then(function(response){
+    axios.get("{{ secure_url('admin/akses_rek_pdam/get') }}/"+vLoket).then(function(response){
       //console.log(response.data);
       if(response.data.status){
         $("#jml_rek").val(response.data.jml_rek_pdam);
@@ -122,7 +122,7 @@ function simpan(){
       return;
     }
 
-    axios.post("{{ url('/admin/akses_rek_pdam/simpan') }}", { 
+    axios.post("{{ secure_url('/admin/akses_rek_pdam/simpan') }}", { 
       loket_code: vLoket,
       jml_rek: vRek
     })

@@ -43,7 +43,7 @@
 
     function LoadData(){
         dtTable = $('#listData').dataTable( {
-            "ajax": "{{ url('/admin/berita/list') }}",
+            "ajax": "{{ secure_url('/admin/berita/list') }}",
             "destroy": true,
             "columns": [
                 { "data": "aksi" },
@@ -76,7 +76,7 @@
 			'judul': $('#judul').val(),'isi': $('#isi').val()
         }
 
-        sentAjax("{{ url('/admin/berita/simpan') }}",Data);    
+        sentAjax("{{ secure_url('/admin/berita/simpan') }}",Data);    
     }
 
     function sentAjax(mUrl, mData){
@@ -112,7 +112,7 @@
 
     function getEdit(mId){
         $.ajaxSetup({ cache: false });
-        $.getJSON("{{ url('admin/berita/edit') }}/"+mId, function(msg){
+        $.getJSON("{{ secure_url('admin/berita/edit') }}/"+mId, function(msg){
             if(msg.status == "Success"){
                 $("#Id").val(msg.data.id);
                 // $("#imei").val(msg.data.imei);
@@ -142,7 +142,7 @@
 
         $.ajax({
             method: "POST",
-            url: "{{ url('/admin/berita/hapus') }}/"+mId,
+            url: "{{ secure_url('/admin/berita/hapus') }}/"+mId,
             data: { Data: mData,
                    _token: "{{ csrf_token() }}" }
         })

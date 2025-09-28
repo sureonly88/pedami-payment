@@ -36,7 +36,7 @@
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
 
-    <form action="{{ url('/login') }}" method="post">
+    <form action="{{ secure_url('/login') }}" method="post">
       <input type="hidden" name="_token" value="{{ csrf_token() }}">
       <div class="form-group has-feedback">
         <input type="text" class="form-control" id="username" name="username" placeholder="Username">

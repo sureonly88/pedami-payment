@@ -13,7 +13,7 @@ $(document).ready(function() {
 
 function getListUsers(){
     dtTable = $('#dataTable').dataTable( {
-        "ajax": "{{ url('admin/users/list') }}",
+        "ajax": "{{ secure_url('admin/users/list') }}",
         "destroy": true,
         "columns": [
             { "data": "username" },
@@ -36,7 +36,7 @@ function simpanUser(){
 
     $.ajax({
         method: "POST",
-        url: "{{ url('/admin/users') }}",
+        url: "{{ secure_url('/admin/users') }}",
         data: { id: cId,
                 username: cUsername,
                 password: cPassword,
@@ -59,7 +59,7 @@ function Empty(){
 }
 
 function editUser(id){
-    $.getJSON("{{ url('/admin/users/get') }}"+"/"+id, function(data){
+    $.getJSON("{{ secure_url('/admin/users/get') }}"+"/"+id, function(data){
         if(data.status == "Success"){
             $("#id").val(id);
             $("#username").val(data.data.username);
@@ -108,7 +108,7 @@ function editUser(id){
     <div class="panel-heading">
         Konfigurasi Users</div>
     <div class="panel-body pan">
-        <form action="{{ url('/users/save') }}" method="POST">
+        <form action="{{ secure_url('/users/save') }}" method="POST">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="id" id="id">
         <div class="form-body pal">

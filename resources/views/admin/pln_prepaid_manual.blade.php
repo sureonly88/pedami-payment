@@ -102,7 +102,7 @@ $(document).ready(function() {
         methods: {
             
             prosesBil: function () {
-                this.$http.get("{{ url('api/pln/prepaid/manual') }}").then(response => {
+                this.$http.get("{{ secure_url('api/pln/prepaid/manual') }}").then(response => {
                     //console.log(response.body);
 
                     if(response.body.status){
@@ -124,7 +124,7 @@ $(document).ready(function() {
                 
                 vmCU.pesanSpan = "<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>MEMPROSES ADVISE...</b></span><br/>";
 
-                vmCU.$http.post("{{ url('api/transaksi_bayar/advise/') }}", {
+                vmCU.$http.post("{{ secure_url('api/transaksi_bayar/advise/') }}", {
                     nomor_pelanggan: idpel, 
                     produk: produk, 
                     denom: denom, 

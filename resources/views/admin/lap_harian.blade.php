@@ -11,7 +11,7 @@ $(document).ready(function() {
 
 function tampilDetail(Loket, Tanggal, Username){
     dtTable = $('#dataTableDetail').dataTable( {
-        "ajax": "{{ url('admin/harian/detail') }}/"+Tanggal+"/"+Loket+"/"+Username,
+        "ajax": "{{ secure_url('admin/harian/detail') }}/"+Tanggal+"/"+Loket+"/"+Username,
         "destroy": true,
         "columns": [
             { "data": "CUST_ID" },
@@ -36,11 +36,11 @@ function tampilDetail(Loket, Tanggal, Username){
 }
 
 function ctkLaporanHarian(Loket, Tanggal, Username){
-    window.open("{{ url('admin/ctklaporan/harian/') }}/"+Tanggal+"/"+Loket+"/"+Username,'_blank');
+    window.open("{{ secure_url('admin/ctklaporan/harian/') }}/"+Tanggal+"/"+Loket+"/"+Username,'_blank');
 }
 
 function exportLaporanHarian(Loket, Tanggal, Username){
-    window.open("{{ url('admin/extlaporan/harian/') }}/"+Tanggal+"/"+Loket+"/"+Username,'_blank');
+    window.open("{{ secure_url('admin/extlaporan/harian/') }}/"+Tanggal+"/"+Loket+"/"+Username,'_blank');
 }
 
 function ctkRekapHarian(){
@@ -52,7 +52,7 @@ function ctkRekapHarian(){
 		userLoket = ['-'];
 	}
 
-    window.open("{{ url('admin/ctklaporan/rekap_harian/') }}/"+tglTransaksi+"/"+userLoket+"/"+pilJenis,'_blank');
+    window.open("{{ secure_url('admin/ctklaporan/rekap_harian/') }}/"+tglTransaksi+"/"+userLoket+"/"+pilJenis,'_blank');
 }
 
 function Log(){
@@ -69,7 +69,7 @@ function getLaporanHarian(){
 	}
 
     dtTable = $('#dataTable').dataTable( {
-        "ajax": "{{ url('admin/harian/rekap') }}/"+tglTransaksi+"/"+userLoket+"/"+pilJenis,
+        "ajax": "{{ secure_url('admin/harian/rekap') }}/"+tglTransaksi+"/"+userLoket+"/"+pilJenis,
         "destroy": true,
         "columns": [
             { "data": "TRANSACTION_DATE" },
@@ -130,7 +130,7 @@ function getLaporanHarian(){
 <script>
 
 function cetakKwitansi(){
-	window.open("{{ url('admin/kwitansi') }}/"+$("#kwLoket").val()+"/"+$("#kwTanggal").val(), "", "left=0,top=0,width=650,height=250");
+	window.open("{{ secure_url('admin/kwitansi') }}/"+$("#kwLoket").val()+"/"+$("#kwTanggal").val(), "", "left=0,top=0,width=650,height=250");
 }
 </script>
 

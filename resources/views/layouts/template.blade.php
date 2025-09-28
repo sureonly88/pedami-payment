@@ -70,8 +70,8 @@
           'redisServer' => env('REDIS_SERVER_HOST'),
           'userRole' => Auth::user()->role,
           'kodeLoket' => $user['loket_code'],
-          'urlNotifikasi' => url('admin/admin_saldo/notif'),
-          'urlRefreshSaldo' => url('admin/cek_pulsa/{kode}')
+          'urlNotifikasi' => secure_url('admin/admin_saldo/notif'),
+          'urlRefreshSaldo' => secure_url('admin/cek_pulsa/{kode}')
       ]) !!};
 
       Vue.http.options.root = '/root';

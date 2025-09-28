@@ -250,7 +250,7 @@ $(document).ready(function() {
     			//$("#ulangIdpel").focus();
 
 				window.open(
-				  "{{ url('/admin/pln_prepaid_cu') }}",
+				  "{{ secure_url('/admin/pln_prepaid_cu') }}",
 				  "_blank" // <- This is what makes it open in a new window.
 				);
 
@@ -258,7 +258,7 @@ $(document).ready(function() {
 			},
 
 			ProsesCetakUlang: function() {
-				this.$http.get("{{ url('api/pln/prepaid/cetak_ulang') }}/"+vmPln.ulangIdpel).then(response => {
+				this.$http.get("{{ secure_url('api/pln/prepaid/cetak_ulang') }}/"+vmPln.ulangIdpel).then(response => {
 
 					console.log(response.body);
 
@@ -396,7 +396,7 @@ $(document).ready(function() {
 
 				vmPln.pesanSpan = "<span><i class='fa fa-cloud-download'></i>&nbsp;&nbsp;&nbsp;<b>PENGECEKAN TAGIHAN PELANGGAN...</b></span>";
 
-				this.$http.get("{{ url('api/pln/prepaid/request') }}/"+vmPln.nopelanggan).then(response => {
+				this.$http.get("{{ secure_url('api/pln/prepaid/request') }}/"+vmPln.nopelanggan).then(response => {
 					console.log(response.body);
 
 					if(response.body.status){
@@ -436,7 +436,7 @@ $(document).ready(function() {
 
       					vmPln.pesanSpan += "<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES PEMBAYARAN NO.PEL : "+mData.data.subscriber_id+" A/N "+mData.data.subscriber_name+"</b></span><br/>";
 
-      					vmPln.$http.post("{{ url('api/pln/prepaid/purchase') }}", {idpel: mData.data.subscriber_id, payment_message: mData.purchase_message, rupiah_token: vmPln.jmlToken, buying_option: vmPln.pilToken, _token: "{{ csrf_token() }}" }).then(response => {
+      					vmPln.$http.post("{{ secure_url('api/pln/prepaid/purchase') }}", {idpel: mData.data.subscriber_id, payment_message: mData.purchase_message, rupiah_token: vmPln.jmlToken, buying_option: vmPln.pilToken, _token: "{{ csrf_token() }}" }).then(response => {
       						
       						//console.log(response.body);
 
@@ -464,7 +464,7 @@ $(document).ready(function() {
 
 	      								vmPln.pesanSpan +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES ULANG PEMBELIAN KE 1...</b></span><br/>";
 
-	      								vmPln.$http.post("{{ url('api/pln/prepaid/advise') }}", {
+	      								vmPln.$http.post("{{ secure_url('api/pln/prepaid/advise') }}", {
 	      									idpel: mData.data.subscriber_id, 
 	      									reversal_message: mData.reversal_message, 
 	      									rupiah_token: vmPln.jmlToken, 
@@ -495,7 +495,7 @@ $(document).ready(function() {
 
 		      											vmPln.pesanSpan +=	"<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>PROSES ULANG PEMBELIAN KE 2...</b></span><br/>";
 
-					      								vmPln.$http.post("{{ url('api/pln/prepaid/advise') }}", {
+					      								vmPln.$http.post("{{ secure_url('api/pln/prepaid/advise') }}", {
 					      									idpel: mData.data.subscriber_id, 
 					      									reversal_message: mData.reversal_message, 
 					      									rupiah_token: vmPln.jmlToken, 

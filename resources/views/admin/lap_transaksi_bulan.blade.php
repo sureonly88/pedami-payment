@@ -199,7 +199,7 @@ function cetakRekapBulan(){
 
 	Tahun = $("#Tahun").val();
 	Bulan = $("#Bulan").val();
-    window.open("{{ url('admin/lap_transaksi/bulan') }}/"+Tahun+"/"+Bulan+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/pdf",'_blank');
+    window.open("{{ secure_url('admin/lap_transaksi/bulan') }}/"+Tahun+"/"+Bulan+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/pdf",'_blank');
 }
 
 $(document).ready(function() {
@@ -251,7 +251,7 @@ $(document).ready(function() {
 				Bulan = $("#Bulan").val();
 
 				dtTable = $('#rekapTable').dataTable( {
-			        "ajax": "{{ url('admin/lap_transaksi/bulan') }}/"+Tahun+"/"+Bulan+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/grid",
+			        "ajax": "{{ secure_url('admin/lap_transaksi/bulan') }}/"+Tahun+"/"+Bulan+"/"+KodeLoket+"/"+vPilJenis+"/"+JenisLoket+"/grid",
 			        "destroy": true,
 			        "columns": [
 			        	{ "data": "tahun" },

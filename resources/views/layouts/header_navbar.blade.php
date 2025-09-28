@@ -22,7 +22,7 @@
             <li v-for="data in datas"><a href='#'><div class='pull-left'><img src='{{ secure_asset('dist/img/avatar04.png') }}' class='img-circle' alt='User Image'></div><h4>@{{ data.username }}<small><i class='fa fa-clock-o'></i> @{{ data.tgl_request }}</small></h4><p>@{{ data.kode_loket }} Request Topup @{{ data.request_saldo | currency('Rp. ',0) }}</p></a></li>
           </ul>
         </li>
-        <li class="footer"><a href="{{ url('/admin/admin_saldo') }}">See All Messages</a></li>
+        <li class="footer"><a href="{{ secure_url('/admin/admin_saldo') }}">See All Messages</a></li>
       </ul>
     </li>
     <!-- Notifications: style can be found in dropdown.less -->
