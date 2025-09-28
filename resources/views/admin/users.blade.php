@@ -1,8 +1,8 @@
 @extends('.../layouts/template')
 
 @section('content')
-<script src="{{ URL::asset('plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
-<script src="{{ URL::asset('plugins/datatables/jquery.dataTables.min.js') }}"></script> 
+<script src="{{ secure_asset('plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+<script src="{{ secure_asset('plugins/datatables/jquery.dataTables.min.js') }}"></script> 
 
 <script>
 $( "#menuUsers" ).prop( "class", "active" );

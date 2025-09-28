@@ -8,7 +8,7 @@
 </style>
 
 <!-- bootstrap wysihtml5 - text editor -->
-<link rel="stylesheet" href="{{ URL::asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
+<link rel="stylesheet" href="{{ secure_asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
 
 <script>
 	$(document).ready(function() {
@@ -252,7 +252,7 @@
   </div>
 </div>
 
-<script src="{{ URL::asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
+<script src="{{ secure_asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
 
 @include('admin.modals')
 

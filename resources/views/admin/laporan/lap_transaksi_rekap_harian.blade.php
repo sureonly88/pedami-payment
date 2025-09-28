@@ -30,7 +30,7 @@
 <body>
 <table>
 	<tr>
-		<td><img src="{{ URL::asset('images/kopkar/koperasi_logo.gif') }}" style="width:50px;height:50px;"> </td>
+		<td><img src="{{ secure_asset('images/kopkar/koperasi_logo.gif') }}" style="width:50px;height:50px;"> </td>
 		<td>KOPERASI PEDAMI<BR/>REKAP TRANSAKSI HARIAN PEDAMI PAYMENT</td>
 	</tr>
 </table>

@@ -169,5 +169,5 @@
 </section>
 <!-- /.content -->
 
-<script src="{{ URL::asset('plugins/chartjs/Chart.min.js') }}"></script>
+<script src="{{ secure_asset('plugins/chartjs/Chart.min.js') }}"></script>
 @endsection

@@ -55,7 +55,7 @@ $( document ).ready(function() {
 	<div class="col-md-3">
 		<div class="box box-primary" style="min-height: 550px">
                 <div class="box-body box-profile">
-                  <img class="profile-user-img img-responsive img-circle" src="{{ URL::asset('dist/img/avatar04.png') }}" alt="User profile picture">
+                  <img class="profile-user-img img-responsive img-circle" src="{{ secure_asset('dist/img/avatar04.png') }}" alt="User profile picture">
                   <h3 class="profile-username text-center">{{strtoupper($user['username'])}} ({{strtoupper($user['role'])}})</h3>
                   <p class="text-muted text-center">Last Login : {{$user['lastlogin']}}</p>
 

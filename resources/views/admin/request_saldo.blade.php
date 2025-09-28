@@ -491,7 +491,7 @@
             <div class="row">
                 @foreach($bankTujuan as $bank)
                 <div class="col-md-3">
-                    <img alt="Logo Bank" src="{{ URL::asset('/images/kopkar/logo-mandiri.gif') }}" style="height: 32px"><br/>
+                    <img alt="Logo Bank" src="{{ secure_asset('/images/kopkar/logo-mandiri.gif') }}" style="height: 32px"><br/>
             
                     Bank {{ $bank->nama }}</br>
                     {{ $bank->nomor }}<br/>

@@ -19,7 +19,7 @@
         <li>
           <!-- inner menu: contains the actual data -->
           <ul class="menu" id="listNotif">
-            <li v-for="data in datas"><a href='#'><div class='pull-left'><img src='{{ URL::asset('dist/img/avatar04.png') }}' class='img-circle' alt='User Image'></div><h4>@{{ data.username }}<small><i class='fa fa-clock-o'></i> @{{ data.tgl_request }}</small></h4><p>@{{ data.kode_loket }} Request Topup @{{ data.request_saldo | currency('Rp. ',0) }}</p></a></li>
+            <li v-for="data in datas"><a href='#'><div class='pull-left'><img src='{{ secure_asset('dist/img/avatar04.png') }}' class='img-circle' alt='User Image'></div><h4>@{{ data.username }}<small><i class='fa fa-clock-o'></i> @{{ data.tgl_request }}</small></h4><p>@{{ data.kode_loket }} Request Topup @{{ data.request_saldo | currency('Rp. ',0) }}</p></a></li>
           </ul>
         </li>
         <li class="footer"><a href="{{ url('/admin/admin_saldo') }}">See All Messages</a></li>
@@ -48,13 +48,13 @@
     <!-- User Account: style can be found in dropdown.less -->
     <li class="dropdown user user-menu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <img src="{{ URL::asset('dist/img/avatar04.png') }}" class="user-image" alt="User Image">
+        <img src="{{ secure_asset('dist/img/avatar04.png') }}" class="user-image" alt="User Image">
         <span class="hidden-xs">{{ strtoupper($user['username']) }}</span>
       </a>
       <ul class="dropdown-menu">
         <!-- User image -->
         <li class="user-header">
-          <img src="{{ URL::asset('dist/img/avatar04.png') }}" class="img-circle" alt="User Image">
+          <img src="{{ secure_asset('dist/img/avatar04.png') }}" class="img-circle" alt="User Image">
 
           <p>
             {{ strtoupper($user['username']) }} - {{ strtoupper($user['role']) }}
