@@ -89,8 +89,25 @@ services:
     restart: always
     environment:
       PMA_HOST: mariadb
-    ports:
-      - "8730:80"
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+
+      # Router utama HTTPS
+      - "traefik.http.routers.phpmyadmin.rule=Host(`pma.paymentpedami.com`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin.tls=true"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=letsencrypt"
+
+      # Router HTTP -> redirect ke HTTPS
+      - "traefik.http.routers.phpmyadmin-redirect.rule=Host(`pma.paymentpedami.com`)"
+      - "traefik.http.routers.phpmyadmin-redirect.entrypoints=web"
+      - "traefik.http.routers.phpmyadmin-redirect.middlewares=redirect-https"
+      - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
+
+      # Pastikan port internal service
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
     depends_on:
       - mariadb
     networks:
