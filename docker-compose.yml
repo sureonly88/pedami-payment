@@ -90,7 +90,7 @@ services:
     environment:
       PMA_HOST: mariadb
     ports:
-      - "8080:80"
+      - "8730:80"
     depends_on:
       - mariadb
     networks:
