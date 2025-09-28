@@ -36,9 +36,30 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.laravel54.rule=Host(`ppob-baru.paymentpedami.com`)"
-      - "traefik.http.routers.laravel54.entrypoints=web"
-      - "traefik.http.services.laravel54-svc.loadbalancer.server.port=80"
+      # Redirect HTTP -> HTTPS
+      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.routers.app.rule=Host(`ppob-baru.paymentpedami.com`)"
+      - "traefik.http.middlewares.app-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.app.middlewares=app-https-redirect"
+
+      # Router HTTPS
+      - "traefik.http.routers.app-https.entrypoints=websecure"
+      - "traefik.http.routers.app-https.rule=Host(`ppob-baru.paymentpedami.com`)"
+      - "traefik.http.routers.app-https.tls=true"
+      - "traefik.http.routers.app-https.tls.certresolver=letsencrypt"
+
+      # Security headers (HSTS, XSS, MIME)
+      - "traefik.http.middlewares.sec-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.sec-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.sec-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.sec-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.sec-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.sec-headers.headers.frameDeny=true"
+      - "traefik.http.routers.app-https.middlewares=sec-headers"
+
+      - "traefik.http.middlewares.app-ratelimit.ratelimit.average=100"
+      - "traefik.http.middlewares.app-ratelimit.ratelimit.burst=200"
+      - "traefik.http.routers.app-https.middlewares=sec-headers,app-ratelimit"
 
   mariadb:
     image: mariadb:11
