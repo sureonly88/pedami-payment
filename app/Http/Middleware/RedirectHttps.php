@@ -15,11 +15,11 @@ class RedirectHttps
      */
     public function handle($request, Closure $next)
     {
-        if (!$request->secure() && env('IS_SECURE') === true) {
-            //dd("https://ppob.pedamipayment.com/kopkarbaru/public/"$request->path());
-            //return redirect("https://ppob.pedamipayment.com/kopkarbaru/public/".$request->path());
-            return redirect(env('URL_SECURE').$request->path());
-        }
+        // if (!$request->secure() && env('IS_SECURE') === true) {
+        //     //dd("https://ppob.pedamipayment.com/kopkarbaru/public/"$request->path());
+        //     //return redirect("https://ppob.pedamipayment.com/kopkarbaru/public/".$request->path());
+        //     return redirect(env('URL_SECURE').$request->path());
+        // }
 
         return $next($request);
     }
