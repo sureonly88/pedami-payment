@@ -46,6 +46,7 @@ services:
       - "traefik.http.routers.ppob-http.entrypoints=web"
       - "traefik.http.middlewares.ppob-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.ppob-http.middlewares=ppob-redirect"
+      - "traefik.http.routers.ppob-http.service=ppob-svc"
 
       # Router HTTPS (tautkan eksplisit ke service)
       - "traefik.http.routers.ppob-https.rule=Host(`ppob-baru.paymentpedami.com`)"
@@ -108,6 +109,7 @@ services:
       - "traefik.http.routers.pma-http.entrypoints=web"
       - "traefik.http.middlewares.pma-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.pma-http.middlewares=pma-redirect"
+      - "traefik.http.routers.pma-http.service=pma-svc"
 
       - "traefik.http.routers.pma-https.rule=Host(`pma.paymentpedami.com`)"
       - "traefik.http.routers.pma-https.entrypoints=websecure"
