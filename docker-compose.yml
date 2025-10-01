@@ -89,8 +89,8 @@ services:
       - ./init-users.sql:/docker-entrypoint-initdb.d/00-init-users.sql:ro
     networks:
       - dokploy-network
-    #ports:
-    #  - "3306:3306"
+    ports:
+     - "3306:3306"
 
   phpmyadmin:
     image: phpmyadmin:5.2
