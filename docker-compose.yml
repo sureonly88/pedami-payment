@@ -36,30 +36,38 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      # Redirect HTTP -> HTTPS
-      - "traefik.http.routers.app.entrypoints=web"
-      - "traefik.http.routers.app.rule=Host(`ppob-baru.paymentpedami.com`)"
-      - "traefik.http.middlewares.app-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.app.middlewares=app-https-redirect"
+      - "traefik.docker.network=dokploy-network"
 
-      # Router HTTPS
-      - "traefik.http.routers.app-https.entrypoints=websecure"
-      - "traefik.http.routers.app-https.rule=Host(`ppob-baru.paymentpedami.com`)"
-      - "traefik.http.routers.app-https.tls=true"
-      - "traefik.http.routers.app-https.tls.certresolver=letsencrypt"
+      # Service (nama unik)
+      - "traefik.http.services.ppob-svc.loadbalancer.server.port=80"
 
-      # Security headers (HSTS, XSS, MIME)
-      - "traefik.http.middlewares.sec-headers.headers.stsSeconds=31536000"
-      - "traefik.http.middlewares.sec-headers.headers.stsIncludeSubdomains=true"
-      - "traefik.http.middlewares.sec-headers.headers.stsPreload=true"
-      - "traefik.http.middlewares.sec-headers.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.sec-headers.headers.browserXssFilter=true"
-      - "traefik.http.middlewares.sec-headers.headers.frameDeny=true"
-      - "traefik.http.routers.app-https.middlewares=sec-headers"
+      # Router HTTP → redirect ke HTTPS
+      - "traefik.http.routers.ppob-http.rule=Host(`ppob-baru.paymentpedami.com`)"
+      - "traefik.http.routers.ppob-http.entrypoints=web"
+      - "traefik.http.middlewares.ppob-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.ppob-http.middlewares=ppob-redirect"
 
-      - "traefik.http.middlewares.app-ratelimit.ratelimit.average=100"
-      - "traefik.http.middlewares.app-ratelimit.ratelimit.burst=200"
-      - "traefik.http.routers.app-https.middlewares=sec-headers,app-ratelimit"
+      # Router HTTPS (tautkan eksplisit ke service)
+      - "traefik.http.routers.ppob-https.rule=Host(`ppob-baru.paymentpedami.com`)"
+      - "traefik.http.routers.ppob-https.entrypoints=websecure"
+      - "traefik.http.routers.ppob-https.tls=true"
+      - "traefik.http.routers.ppob-https.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ppob-https.service=ppob-svc"
+
+      # Security headers (pakai nama middleware UNIK)
+      - "traefik.http.middlewares.ppob-sec.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.ppob-sec.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.ppob-sec.headers.stsPreload=true"
+      - "traefik.http.middlewares.ppob-sec.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.ppob-sec.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.ppob-sec.headers.frameDeny=true"
+
+      # Rate limit (nama middleware UNIK)
+      - "traefik.http.middlewares.ppob-rate.ratelimit.average=100"
+      - "traefik.http.middlewares.ppob-rate.ratelimit.burst=200"
+
+      # PASANG middleware pada router HTTPS DALAM SATU BARIS
+      - "traefik.http.routers.ppob-https.middlewares=ppob-sec,ppob-rate"
 
   mariadb:
     image: mariadb:11
@@ -93,21 +101,19 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=dokploy-network"
+      - "traefik.http.services.pma-svc.loadbalancer.server.port=80"
 
-      # Router utama HTTPS
-      - "traefik.http.routers.phpmyadmin.rule=Host(`pma.paymentpedami.com`)"
-      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
-      - "traefik.http.routers.phpmyadmin.tls=true"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pma-http.rule=Host(`pma.paymentpedami.com`)"
+      - "traefik.http.routers.pma-http.entrypoints=web"
+      - "traefik.http.middlewares.pma-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.pma-http.middlewares=pma-redirect"
 
-      # Router HTTP -> redirect ke HTTPS
-      - "traefik.http.routers.phpmyadmin-redirect.rule=Host(`pma.paymentpedami.com`)"
-      - "traefik.http.routers.phpmyadmin-redirect.entrypoints=web"
-      - "traefik.http.routers.phpmyadmin-redirect.middlewares=redirect-https"
-      - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
-
-      # Pastikan port internal service
-      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+      - "traefik.http.routers.pma-https.rule=Host(`pma.paymentpedami.com`)"
+      - "traefik.http.routers.pma-https.entrypoints=websecure"
+      - "traefik.http.routers.pma-https.tls=true"
+      - "traefik.http.routers.pma-https.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pma-https.service=pma-svc"
     depends_on:
       - mariadb
     networks:
