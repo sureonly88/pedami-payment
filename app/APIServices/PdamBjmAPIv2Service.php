@@ -746,14 +746,24 @@ class PdamBjmAPIv2Service
                 ),200);
             }else{
 
-                $dataPrint = PrintBaru::handlePrintBaru($arrRek, $jenisKertas, "PDAMBJM");
+                //$dataPrint = PrintBaru::handlePrintBaru($arrRek, $jenisKertas, "PDAMBJM");
+
+                // return Response::json(array(
+                //     'status' => 'Success',
+                //     'message' => 'Payment Berhasil',
+                //     'is_print_baru' => $isPrinterBaru,
+                //     'jenis_kertas' => $jenisKertas,
+                //     'print_data' => $dataPrint,
+                //     'error_code' => '200',
+                //     'data' => $arrRek
+                // ),200);
 
                 return Response::json(array(
                     'status' => 'Success',
                     'message' => 'Payment Berhasil',
                     'is_print_baru' => $isPrinterBaru,
                     'jenis_kertas' => $jenisKertas,
-                    'print_data' => $dataPrint,
+                    'print_data' => "-",
                     'error_code' => '200',
                     'data' => $arrRek
                 ),200);
