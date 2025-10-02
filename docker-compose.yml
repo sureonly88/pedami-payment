@@ -19,6 +19,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     volumes:
       - app-storage:/var/www/html/storage
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   web:
     build:
