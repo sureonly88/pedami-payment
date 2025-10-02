@@ -21,6 +21,7 @@ services:
       - app-storage:/var/www/html/storage
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - ./timezone.ini:/usr/local/etc/php/conf.d/99-timezone.ini:ro
 
   web:
     build:
