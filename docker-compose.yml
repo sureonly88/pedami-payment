@@ -71,11 +71,12 @@ services:
       - "traefik.http.middlewares.ppob-sec.headers.frameDeny=true"
 
       # Rate limit (nama middleware UNIK)
-      - "traefik.http.middlewares.ppob-rate.ratelimit.average=100"
-      - "traefik.http.middlewares.ppob-rate.ratelimit.burst=200"
+      #- "traefik.http.middlewares.ppob-rate.ratelimit.average=100"
+      #- "traefik.http.middlewares.ppob-rate.ratelimit.burst=200"
 
       # PASANG middleware pada router HTTPS DALAM SATU BARIS
-      - "traefik.http.routers.ppob-https.middlewares=ppob-sec,ppob-rate"
+      #- "traefik.http.routers.ppob-https.middlewares=ppob-sec,ppob-rate"
+      - "traefik.http.routers.ppob-https.middlewares=ppob-sec"
 
   mariadb:
     image: mariadb:11
