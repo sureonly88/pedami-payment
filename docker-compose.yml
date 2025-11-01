@@ -24,6 +24,8 @@ services:
       - ./timezone.ini:/usr/local/etc/php/conf.d/99-timezone.ini:ro
       - ./www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./opcache.ini:/usr/local/etc/php/conf.d/99-opcache.ini:ro
+    ulimits:
+      nofile: 65535
 
   web:
     build:
@@ -39,6 +41,8 @@ services:
       - ./:/var/www/html:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    ulimits:
+      nofile: 65535
     expose:
       - "80"
     labels:
@@ -71,12 +75,12 @@ services:
       - "traefik.http.middlewares.ppob-sec.headers.frameDeny=true"
 
       # Rate limit (nama middleware UNIK)
-      - "traefik.http.middlewares.ppob-rate.ratelimit.average=150"
-      - "traefik.http.middlewares.ppob-rate.ratelimit.burst=200"
+      # - "traefik.http.middlewares.ppob-rate.ratelimit.average=150"
+      # - "traefik.http.middlewares.ppob-rate.ratelimit.burst=200"
 
       # PASANG middleware pada router HTTPS DALAM SATU BARIS
-      - "traefik.http.routers.ppob-https.middlewares=ppob-sec,ppob-rate"
-      #- "traefik.http.routers.ppob-https.middlewares=ppob-sec"
+      #- "traefik.http.routers.ppob-https.middlewares=ppob-sec,ppob-rate"
+      - "traefik.http.routers.ppob-https.middlewares=ppob-sec"
 
   mariadb:
     image: mariadb:11
