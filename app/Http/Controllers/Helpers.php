@@ -125,7 +125,13 @@ class Helpers extends Controller {
     }
 
     public static function sent_http_post($url,$params){
-        $client = new Client();
+        //$client = new Client();
+
+        $client = new Client([
+            'timeout' => 300,           // batas total waktu request (detik)
+            'connect_timeout' => 10,    // batas waktu saat mencoba konek
+            'read_timeout' => 300,      // batas waktu menunggu respon data
+        ]);
 
         $response = $client->request('POST', $url, []);
 
@@ -146,7 +152,13 @@ class Helpers extends Controller {
     }
 
     public static function sent_http_post_param($url,$params){
-        $client = new Client();
+        //$client = new Client();
+
+        $client = new Client([
+            'timeout' => 300,           // batas total waktu request (detik)
+            'connect_timeout' => 10,    // batas waktu saat mencoba konek
+            'read_timeout' => 300,      // batas waktu menunggu respon data
+        ]);
 
         $response = $client->request('POST', $url, [
             'body' => $params

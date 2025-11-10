@@ -27,6 +27,9 @@ class RekananAPIController extends Controller
 
     public function payment(Request $request){
 
+        // ini_set('max_execution_time', 600); // 10 menit
+        // set_time_limit(600);
+
         $payment_data = $request->input('payment_data');
 
         try {
