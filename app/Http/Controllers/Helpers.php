@@ -128,9 +128,9 @@ class Helpers extends Controller {
         //$client = new Client();
 
         $client = new Client([
-            'timeout' => 300,           // batas total waktu request (detik)
+            'timeout' => 280,           // batas total waktu request (detik)
             'connect_timeout' => 10,    // batas waktu saat mencoba konek
-            'read_timeout' => 300,      // batas waktu menunggu respon data
+            'read_timeout' => 280,      // batas waktu menunggu respon data
         ]);
 
         $response = $client->request('POST', $url, []);
@@ -155,9 +155,9 @@ class Helpers extends Controller {
         //$client = new Client();
 
         $client = new Client([
-            'timeout' => 300,           // batas total waktu request (detik)
+            'timeout' => 280,           // batas total waktu request (detik)
             'connect_timeout' => 10,    // batas waktu saat mencoba konek
-            'read_timeout' => 300,      // batas waktu menunggu respon data
+            'read_timeout' => 280,      // batas waktu menunggu respon data
         ]);
 
         $response = $client->request('POST', $url, [
