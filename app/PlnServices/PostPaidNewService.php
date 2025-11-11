@@ -376,6 +376,7 @@ class PostPaidNewService
 			$simpanAdvise->advise_message = $adviseMessage;
 			$simpanAdvise->status = 0;
 			$simpanAdvise->denom = 0;
+			$simpanAdvise->username = $username;
 			$simpanAdvise->save();
 
 			$response = Helpers::sent_http_post_param("https://".env('PLN_LUNASIN_IP','').":".env('PLN_LUNASIN_PORT',''), $params);

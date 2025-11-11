@@ -389,6 +389,7 @@ class PdamBjmAPIv2Service
 			$simpanAdvise->produk = "PDAMBJM";
 			$simpanAdvise->advise_message = $adviseMessage;
 			$simpanAdvise->status = 0;
+            $simpanAdvise->username = $username;    
             $simpanAdvise->save();
             //END SIMPAN ADVISE PDAM
             
@@ -625,6 +626,7 @@ class PdamBjmAPIv2Service
 			$simpanAdvise->produk = "PDAMBJM";
 			$simpanAdvise->advise_message = $adviseMessage;
 			$simpanAdvise->status = 0;
+            $simpanAdvise->username = $username;
             $simpanAdvise->save();
             //END SIMPAN ADVISE PDAM
             

@@ -251,7 +251,7 @@ class PdambjmRknService
             $user = DB::table('users')
                 ->leftJoin('lokets','users.loket_id','=','lokets.id')
                 ->where('users.api_token',$api_token)
-                ->select('lokets.loket_code','lokets.pulsa')
+                ->select('lokets.loket_code','lokets.pulsa','users.username')
                 ->first();
 
             $loket_code = $user->loket_code;
@@ -309,6 +309,7 @@ class PdambjmRknService
 			$simpanAdvise->produk = "PDAMBJM";
 			$simpanAdvise->advise_message = $adviseMessage;
 			$simpanAdvise->status = 0;
+            $simpanAdvise->username = $user->username;
             $simpanAdvise->save();
             //END SIMPAN ADVISE PDAM
             
