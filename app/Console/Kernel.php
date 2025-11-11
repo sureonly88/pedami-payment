@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \App\Console\Commands\SendAdvisePdambjm::class,
         \App\Console\Commands\SendEmailPdambjm::class,
         \App\Console\Commands\SendEmailSisaSaldo::class,
         \App\Console\Commands\SendLoginLunasin::class
@@ -28,9 +29,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-
-        $schedule->command('emailPdambjm:send')->dailyAt('01:00');
-        $schedule->command('emailSisaSaldo:send')->dailyAt('02:00');
+        $schedule->command('advisePDAM:send')->dailyAt('01:00');
+        $schedule->command('emailPdambjm:send')->dailyAt('02:00');
+        $schedule->command('emailSisaSaldo:send')->dailyAt('03:00');
         //$schedule->command('emailPdambjm:send')->everyMinute();
         //$schedule->command('loginLunasin:send')->cron('0 */3 * * *');
         //0 */3 * * *
