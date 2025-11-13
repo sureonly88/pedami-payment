@@ -94,16 +94,74 @@ class PlnPrepaidController extends Controller
 		return Response::json($payment,200);
 	}
 
-	public function getManualPrepaid(){
-		$manual = AdviseLunasin::whereNull('deleted_at');
+	public function getManualPrepaid(Request $request)
+	{
+		$tanggal = $request->input('tanggal', date('Y-m-d'));
+		$produk = $request->input('produk', '');
+		$perPage = $request->input('per_page', 20);
+		$page = $request->input('page', 1);
 
-		$pdam = AdvisePDAM::whereNull('deleted_at')->union($manual)->get();
+		// Query AdvisePDAM
+		$queryPdam = AdvisePDAM::whereNull('deleted_at')
+			->whereDate('created_at', $tanggal)
+			->select([
+				'id as idtrx',
+				'produk',
+				'denom',
+				'created_at',
+				'advise_message',
+				'username'
+			]);
+		if ($produk && $produk == 'PDAMBJM') {
+			$queryPdam = $queryPdam->where('produk', 'PDAMBJM');
+		}
 
-		return array(
-            'status' => true,
-            'message' => '-',
-            'data' => $pdam
-        );
+		// Query AdviseLunasin (PLN_POSTPAID dan PLN_PREPAID)
+		$queryLunasin = AdviseLunasin::whereNull('deleted_at')
+			->whereDate('created_at', $tanggal)
+			->select([
+				'id as idtrx',
+				'produk',
+				'denom',
+				'created_at',
+				'advise_message',
+				'username'
+			]);
+		if ($produk && in_array($produk, ['PLN_POSTPAID', 'PLN_PREPAID'])) {
+			$queryLunasin = $queryLunasin->where('produk', $produk);
+		}
+
+		// Gabungkan data
+		if ($produk == 'PDAMBJM') {
+			$union = $queryPdam;
+		} elseif (in_array($produk, ['PLN_POSTPAID', 'PLN_PREPAID'])) {
+			$union = $queryLunasin;
+		} else {
+			$union = $queryPdam->unionAll($queryLunasin);
+		}
+
+		// Manual pagination
+		$total = $union->count();
+		$results = $union->orderBy('created_at', 'desc')
+			->skip(($page - 1) * $perPage)
+			->take($perPage)
+			->get();
+
+		$from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
+		$to = $from + $results->count() - 1;
+
+		return response()->json([
+			'status' => true,
+			'data' => $results,
+			'pagination' => [
+				'total' => $total,
+				'per_page' => (int)$perPage,
+				'current_page' => (int)$page,
+				'last_page' => $perPage > 0 ? (int)ceil($total / $perPage) : 1,
+				'from' => $from,
+				'to' => $to
+			]
+		]);
 	}
 
 	public function CetakTagihanPrePaid($idpel){

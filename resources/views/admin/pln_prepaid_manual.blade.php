@@ -1,3 +1,4 @@
+<?php
 @extends('...layouts/template')
 
 @section('content')
@@ -27,27 +28,52 @@
     </div>
     <div class="box-body">
 
-        <div class="form-group">
-            <label for="Loket">USER TRANSAKSI</label>
-            <select class="form-control" v-model="username" name="username" id="username" style="width: 100%">
-                    @foreach($users as $user)
-                        <option value="{{$user->username}}">{{$user->username}} - {{$user->nama}}</option>
-                    @endforeach
-            </select>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" class="form-control" value="<?php echo date("Y-m-d"); ?>" v-model="filterTanggal" id="tanggal">
+                </div>
             </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="produk">Produk</label>
+                    <select class="form-control" v-model="filterProduk" id="produk">
+                        <option value="">Semua Produk</option>
+                        <option value="PDAMBJM">PDAMBJM</option>
+                        <option value="PLN_POSTPAID">PLN POSTPAID</option>
+                        <option value="PLN_PREPAID">PLN PREPAID</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>&nbsp;</label><br>
+                    <button type="button" @click="prosesBil(1)" class="btn btn-primary">
+                        <i class="fa fa-search"></i> Filter
+                    </button>
+                    <button type="button" @click="resetFilter()" class="btn btn-default">
+                        <i class="fa fa-refresh"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div style="width:100%;overflow:auto;">
-        <table class="table table-bordered table-hover table-striped dataTable" id="listData">
+        <table class="table table-bordered table-hover table-striped" id="listData">
             <thead>
                 <tr>
                     <th style='min-width: 50px'>AKSI</th>
                     <th style='min-width: 100px'>ID TRANSAKSI</th>
                     <th style='min-width: 100px'>PRODUK</th>
-                    <th style='min-width: 80px'>DENOM</th>
+                    <th style='min-width: 80px'>USERNAME</th>
                     <th style='min-width: 100px'>TANGGAL</th>
                 </tr>
             </thead>                
             <tbody>
+                <tr v-if="listAdvise.length === 0">
+                    <td colspan="5" class="text-center">Tidak ada data</td>
+                </tr>
                 <tr v-for="advise in listAdvise">
                     <td>
                         <button type="button" @click="prosesAdvise('',advise.produk,advise.denom,advise.idtrx,advise.advise_message)" class="btn btn-primary">Proses</button> &nbsp;&nbsp;
@@ -55,11 +81,35 @@
                     </td>
                     <td>@{{ advise.idtrx }}</td>
                     <td>@{{ advise.produk }}</td>
-                    <td>@{{ advise.denom }}</td>
+                    <td>@{{ advise.username }}</td>
                     <td>@{{ advise.created_at }}</td>
                 </tr>
             </tbody>
         </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="row" v-if="pagination.total > 0">
+            <div class="col-sm-5">
+                <div class="dataTables_info">
+                    Menampilkan @{{ pagination.from }} sampai @{{ pagination.to }} dari @{{ pagination.total }} data
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="dataTables_paginate paging_simple_numbers">
+                    <ul class="pagination">
+                        <li class="paginate_button previous" :class="{'disabled': pagination.current_page === 1}">
+                            <a href="#" @click.prevent="prosesBil(pagination.current_page - 1)">Previous</a>
+                        </li>
+                        <li class="paginate_button" v-for="page in paginationPages" :class="{'active': page === pagination.current_page}">
+                            <a href="#" @click.prevent="prosesBil(page)">@{{ page }}</a>
+                        </li>
+                        <li class="paginate_button next" :class="{'disabled': pagination.current_page === pagination.last_page}">
+                            <a href="#" @click.prevent="prosesBil(pagination.current_page + 1)">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div v-html="pesanSpan" v-show="showMessage" > </div>
@@ -81,15 +131,34 @@ $(document).ready(function() {
             idpel: '',
             username: '',
             pesanSpan: '',
-            listAdvise: []
+            listAdvise: [],
+            filterTanggal: '',
+            filterProduk: '',
+            pagination: {
+                total: 0,
+                per_page: 20,
+                current_page: 1,
+                last_page: 1,
+                from: 1,
+                to: 1
+            }
         },
 
         mounted() {
-            this.prosesBil();
+
+            $("#tanggal").datepicker({ dateFormat: 'yy-mm-dd' });
+
+            // Set tanggal default ke hari ini
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            this.filterTanggal = yyyy + '-' + mm + '-' + dd;
+            
+            this.prosesBil(1);
         },
 
         computed: {
-
             showMessage: function(){
                 if(this.pesanSpan.length > 0){
                     return true;
@@ -97,21 +166,55 @@ $(document).ready(function() {
                     return false;
                 }
             },
+
+            paginationPages: function() {
+                var pages = [];
+                var startPage = Math.max(1, this.pagination.current_page - 2);
+                var endPage = Math.min(this.pagination.last_page, this.pagination.current_page + 2);
+                
+                for (var i = startPage; i <= endPage; i++) {
+                    pages.push(i);
+                }
+                return pages;
+            }
         },
 
         methods: {
             
-            prosesBil: function () {
-                this.$http.get("{{ secure_url('api/pln/prepaid/manual') }}").then(response => {
-                    //console.log(response.body);
+            prosesBil: function (page) {
+                page = page || 1;
+                
+                var params = {
+                    page: page,
+                    per_page: this.pagination.per_page
+                };
 
+                if (this.filterTanggal) {
+                    params.tanggal = this.filterTanggal;
+                }
+
+                if (this.filterProduk) {
+                    params.produk = this.filterProduk;
+                }
+
+                this.$http.get("{{ secure_url('api/pln/prepaid/manual') }}", { params: params }).then(response => {
                     if(response.body.status){
                         vmCU.listAdvise = response.body.data;
+                        vmCU.pagination = response.body.pagination;
                     }
-
                 }, response => {
                     
                 });
+            },
+
+            resetFilter: function() {
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var yyyy = today.getFullYear();
+                this.filterTanggal = yyyy + '-' + mm + '-' + dd;
+                this.filterProduk = '';
+                this.prosesBil(1);
             },
 
             prosesAdvise: function (idpel,produk,denom,idtrx,message) {

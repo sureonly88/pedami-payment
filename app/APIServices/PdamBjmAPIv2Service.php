@@ -953,6 +953,7 @@ class PdamBjmAPIv2Service
             
             $advise = AdvisePDAM::where("idtrx",$idtrx)->first();
 			$adviseMessage = $advise->advise_message;
+            $username = $advise->username;
             
             $response = Helpers::sent_http_get($adviseMessage);
 
@@ -1058,8 +1059,15 @@ class PdamBjmAPIv2Service
                     $arrRinci['beban_tetap'] = $beban_tetap;
                     $arrRinci['biaya_meter'] = $biaya_meter;
 
-                    mPdambjmTrans::insert($arrRinci);
-                    mLoket::updateSaldoLoket($total, $loket_code);
+                    // Cek apakah data dengan cust_id dan blth sudah ada
+                    $cekTrans = mPdambjmTrans::where('cust_id', $nopel)
+                        ->where('blth', $thbl)
+                        ->first();
+
+                    if (!$cekTrans) {
+                        mPdambjmTrans::insert($arrRinci);
+                        mLoket::updateSaldoLoket($total, $loket_code);
+                    }
 
                     $arrRinci['gol'] = $gol;
                     $arrRinci['pakai'] = $pakai;

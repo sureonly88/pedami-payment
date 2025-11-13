@@ -29,9 +29,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('advisePDAM:send')->dailyAt('01:00');
-        $schedule->command('emailPdambjm:send')->dailyAt('02:00');
-        $schedule->command('emailSisaSaldo:send')->dailyAt('03:00');
+        $schedule->command('advisePDAM:send')->dailyAt('03:00');
+        $schedule->command('emailPdambjm:send')->dailyAt('04:00');
+        $schedule->command('emailSisaSaldo:send')->dailyAt('04:30');
         //$schedule->command('emailPdambjm:send')->everyMinute();
         //$schedule->command('loginLunasin:send')->cron('0 */3 * * *');
         //0 */3 * * *
