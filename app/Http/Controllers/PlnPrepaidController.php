@@ -105,7 +105,7 @@ class PlnPrepaidController extends Controller
 		$queryPdam = AdvisePDAM::whereNull('deleted_at')
 			->whereDate('created_at', $tanggal)
 			->select([
-				'id as idtrx',
+				'idtrx',
 				'produk',
 				'denom',
 				'created_at',
@@ -120,7 +120,7 @@ class PlnPrepaidController extends Controller
 		$queryLunasin = AdviseLunasin::whereNull('deleted_at')
 			->whereDate('created_at', $tanggal)
 			->select([
-				'id as idtrx',
+				'idtrx',
 				'produk',
 				'denom',
 				'created_at',
