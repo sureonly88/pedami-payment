@@ -31,7 +31,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="tanggal">Tanggal</label>
-                    <input type="date" class="form-control" value="<?php echo date("Y-m-d"); ?>" v-model="filterTanggal" id="tanggal">
+                    <input type="text" class="form-control" value="<?php echo date("Y-m-d"); ?>" v-model="filterTanggal" id="tanggal">
                 </div>
             </div>
             <div class="col-md-4">
@@ -145,7 +145,7 @@ $(document).ready(function() {
 
         mounted() {
 
-            //$("#tanggal").datepicker({ dateFormat: 'yy-mm-dd' });
+            $("#tanggal").datepicker({ dateFormat: 'yy-mm-dd' });
 
             // Set tanggal default ke hari ini
             var today = new Date();
