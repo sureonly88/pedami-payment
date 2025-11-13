@@ -1,4 +1,3 @@
-<?php
 @extends('...layouts/template')
 
 @section('content')
