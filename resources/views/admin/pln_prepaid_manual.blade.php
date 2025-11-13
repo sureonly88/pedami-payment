@@ -75,7 +75,7 @@
                 </tr>
                 <tr v-for="advise in listAdvise">
                     <td>
-                        <button type="button" @click="prosesAdvise('',advise.produk,advise.denom,advise.idtrx,advise.advise_message)" class="btn btn-primary">Proses</button> &nbsp;&nbsp;
+                        <button type="button" @click="prosesAdvise('',advise.produk,advise.denom,advise.idtrx,advise.advise_message,advise.username)" class="btn btn-primary">Proses</button> &nbsp;&nbsp;
                         <button type="button" @click="batalAdvise(advise.idtrx)" class="btn btn-primary">Batal&nbsp;&nbsp;&nbsp;</button>
                     </td>
                     <td>@{{ advise.idtrx }}</td>
@@ -216,7 +216,7 @@ $(document).ready(function() {
                 this.prosesBil(1);
             },
 
-            prosesAdvise: function (idpel,produk,denom,idtrx,message) {
+            prosesAdvise: function (idpel,produk,denom,idtrx,message,username) {
                 
                 vmCU.pesanSpan = "<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>MEMPROSES ADVISE...</b></span><br/>";
 
@@ -224,7 +224,7 @@ $(document).ready(function() {
                     nomor_pelanggan: idpel, 
                     produk: produk, 
                     denom: denom, 
-                    username: vUser,
+                    username: username,
                     message: message, 
                     idtrx:idtrx,
                     _token: "{{ csrf_token() }}" }).then(response => {
