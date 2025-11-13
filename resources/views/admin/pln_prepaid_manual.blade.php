@@ -145,7 +145,7 @@ $(document).ready(function() {
 
         mounted() {
 
-            $("#tanggal").datepicker({ dateFormat: 'yy-mm-dd' });
+            //$("#tanggal").datepicker({ dateFormat: 'yy-mm-dd' });
 
             // Set tanggal default ke hari ini
             var today = new Date();
