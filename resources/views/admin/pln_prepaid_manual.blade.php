@@ -217,12 +217,6 @@ $(document).ready(function() {
             },
 
             prosesAdvise: function (idpel,produk,denom,idtrx,message) {
-
-                vUser = vmCU.username;
-                if(vUser == ""){
-                    alert("Username Loket Belum Diisi");
-                    return;
-                }
                 
                 vmCU.pesanSpan = "<span><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;&nbsp;<b class='text-yellow'>MEMPROSES ADVISE...</b></span><br/>";
 
