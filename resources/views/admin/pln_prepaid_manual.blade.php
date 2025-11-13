@@ -27,6 +27,8 @@
     </div>
     <div class="box-body">
 
+        <div v-html="pesanSpan" v-show="showMessage" > </div>
+
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
@@ -111,7 +113,7 @@
             </div>
         </div>
 
-        <div v-html="pesanSpan" v-show="showMessage" > </div>
+        
  
     </div>
 </div>
