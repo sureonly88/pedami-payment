@@ -34,7 +34,7 @@ class AdvisePdambjmService
         //Log::info("Total ".count($dtAdvise)." advise PDAM BJM telah di-queue");
 
         // Batasi jumlah data per batch untuk menghindari timeout
-        $batchSize = 20; // Sesuaikan dengan kebutuhan
+        $batchSize = 10; // Sesuaikan dengan kebutuhan
         $chunks = $dtAdvise->chunk($batchSize);
 
         foreach($chunks as $batch){
@@ -43,7 +43,7 @@ class AdvisePdambjmService
                     // Set timeout untuk setiap request
                     // Pastikan PdamBjmAPIv2::prosesAdvise memiliki timeout configuration
                     
-                    Log::info("Memproses Advise PDAM BJM - ID Trx: ".$advise->idtrx);
+                    //Log::info("Memproses Advise PDAM BJM - ID Trx: ".$advise->idtrx);
                     
                     PdamBjmAPIv2::prosesAdvise("-",$advise->produk,$advise->idtrx,1,$advise->username);
                     
@@ -52,7 +52,7 @@ class AdvisePdambjmService
                     
                 } catch (\Exception $e) {
                     // Log error tapi lanjutkan ke data berikutnya
-                    Log::error("Error proses advise ID Trx ".$advise->idtrx.": ".$e->getMessage());
+                    //Log::error("Error proses advise ID Trx ".$advise->idtrx.": ".$e->getMessage());
                     continue;
                 }
             }

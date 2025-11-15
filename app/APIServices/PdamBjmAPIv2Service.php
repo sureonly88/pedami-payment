@@ -1084,7 +1084,7 @@ class PdamBjmAPIv2Service
                 'customer' => $arrRek
             );
 
-		}catch (Exception $e) {
+		}catch (\Exception $e) {
     		$err_message = explode("\r\n",$e->getMessage());
     		$this->simpanLogSistem(json_encode($err_message));
 	        return array(
