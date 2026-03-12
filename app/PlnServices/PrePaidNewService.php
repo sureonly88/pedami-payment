@@ -143,7 +143,7 @@ class PrePaidNewService
             //         'input2'        => $token,
             //         'input3'        => '',
             //         'id_trx'        => $idTrx,
-            //         'kode_produk'   => 'pln-prepaid-3000',
+            //         'kode_produk'   => 'pln-prepaid-3500',
             //         'access_token'  => $tokenLunasin,
             //         'id_app'        => env('PLN_LUNASIN_ID','')
             //     ]
@@ -156,7 +156,7 @@ class PrePaidNewService
 				"input2":"'.$token.'",
 				"input3":"",
 				"id_trx":"'.$idTrx.'",
-				"kode_produk":"pln-prepaid-3000",
+				"kode_produk":"pln-prepaid-3500",
 				"access_token":"'.$tokenLunasin.'",
 				"id_app":"'.env('PLN_LUNASIN_ID','').'"
 			}';
@@ -171,7 +171,7 @@ class PrePaidNewService
             //     "input2":"20000",
             //     "input3":"",
             //     "id_trx":"158997790078304",
-            //     "kode_produk":"pln-prepaid-3000",
+            //     "kode_produk":"pln-prepaid-3500",
             //     "access_token":"d1748a29-9a6a-11ea-bd8f-5600029b5e6d",
             //     "id_app":"5a4593979bba4d923638d199d4ebbdaa1581729443331",
             //     "data":
@@ -526,7 +526,7 @@ class PrePaidNewService
             //         'input2'        => $payData[1],
             //         'input3'        => '',
             //         'id_trx'        => $payData[0],
-            //         'kode_produk'   => 'pln-prepaid-3000',
+            //         'kode_produk'   => 'pln-prepaid-3500',
             //         'access_token'  => $tokenLunasin,
             //         'id_app'        => env('PLN_LUNASIN_ID','')
             //     ]
@@ -539,7 +539,7 @@ class PrePaidNewService
 				"input2":"'.$payData[1].'",
 				"input3":"",
 				"id_trx":"'.$payData[0].'",
-				"kode_produk":"pln-prepaid-3000",
+				"kode_produk":"pln-prepaid-3500",
 				"access_token":"'.$tokenLunasin.'",
 				"id_app":"'.env('PLN_LUNASIN_ID','').'"
 			}';
@@ -551,7 +551,7 @@ class PrePaidNewService
 				"input2":"'.$payData[1].'",
 				"input3":"",
 				"id_trx":"'.$payData[0].'",
-				"kode_produk":"pln-prepaid-3000",
+				"kode_produk":"pln-prepaid-3500",
 				"access_token":"'.$tokenLunasin.'",
 				"id_app":"'.env('PLN_LUNASIN_ID','').'"
 			}';
@@ -576,7 +576,7 @@ class PrePaidNewService
             //     "input2":"20000",
             //     "input3":"",
             //     "id_trx":"158997790078304",
-            //     "kode_produk":"pln-prepaid-3000",
+            //     "kode_produk":"pln-prepaid-3500",
             //     "access_token":"d1748a29-9a6a-11ea-bd8f-5600029b5e6d", 
             //     "id_app":"5a4593979bba4d923638d199d4ebbdaa1581729443331",
             
