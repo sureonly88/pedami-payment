@@ -27,13 +27,21 @@ class ImportPdambjmController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'file_excel' => 'required|mimes:xlsx,xls',
+                'file_excel' => 'required|file',
             ]);
 
             if ($validator->fails()) {
                 return Response::json([
                     'status'  => 'Error',
                     'message' => $validator->errors()->first(),
+                ], 200);
+            }
+
+            $ext = strtolower($request->file('file_excel')->getClientOriginalExtension());
+            if (!in_array($ext, ['xlsx', 'xls'])) {
+                return Response::json([
+                    'status'  => 'Error',
+                    'message' => 'File harus berformat .xlsx atau .xls.',
                 ], 200);
             }
 
