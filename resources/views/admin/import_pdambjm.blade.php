@@ -53,9 +53,10 @@
                     <div class="form-group">
                         <label>Jenis Loket (default)</label>
                         <select id="selJenisLoket" class="form-control">
-                            <option value="GATEWAY">GATEWAY</option>
-                            <option value="WEB">WEB</option>
-                            <option value="MOBILE">MOBILE</option>
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="SWITCHING">SWITCHING</option>
+                            <option value="ANDROID">ANDROID</option>
+                            <option value="PEMBACA METER">PEMBACA METER</option>
                         </select>
                     </div>
                     <button type="button" class="btn btn-primary btn-flat" id="btnUpload" disabled>
