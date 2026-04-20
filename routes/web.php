@@ -208,6 +208,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth'] ], function()
 
     Route::get('setoran/{tglawal}/{tglakhir}', 'LapTransaksiController@getSetoranHarian');
 
+    //Route Import Data PDAM dari Excel
+    Route::get('import_pdambjm', 'ImportPdambjmController@index')->middleware('manageTrx');
+    Route::post('import_pdambjm/upload', 'ImportPdambjmController@upload')->middleware('manageTrx');
+    Route::post('import_pdambjm/proses', 'ImportPdambjmController@proses')->middleware('manageTrx');
+
 });
 
 Route::group(['prefix' => 'printing'], function()

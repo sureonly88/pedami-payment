@@ -94,6 +94,7 @@ array_search("Transaksi PLN Nontaglis",$user['permissions']) !== false)
     <li><a href="{{ secure_url('/admin/man_transaksi_pln') }}"><i class="fa fa-circle-o"></i>Manage PLN Pascabayar</a></li>
     <li><a href="{{ secure_url('/admin/man_pln_prepaid') }}"><i class="fa fa-circle-o"></i>Manage PLN Prabayar (Token)</a></li>
     <li><a href="{{ secure_url('/admin/man_nontaglis') }}"><i class="fa fa-circle-o"></i>Manage PLN Non Taglis</a></li>
+    <li><a href="{{ secure_url('/admin/import_pdambjm') }}"><i class="fa fa-circle-o"></i>Import Data PDAM</a></li>
     <li><a href="{{ secure_url('/admin/admin_saldo') }}"><i class="fa fa-circle-o"></i>Persetujuan Topup</a></li>
   </ul>
 </li>
