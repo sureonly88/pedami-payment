@@ -215,7 +215,20 @@ class ImportPdambjmController extends Controller
                 if (empty($record['jenis_loket'])) {
                     $record['jenis_loket'] = $jenisLoket;
                 }
-                if (empty($record['transaction_date'])) {
+
+                // Format transaction_date ke YYYY-MM-DD HH:MM:SS (sesuai tipe timestamp MariaDB)
+                if (!empty($record['transaction_date'])) {
+                    $raw = $record['transaction_date'];
+                    // PHPExcel dengan setReadDataOnly(true) kadang return numeric serial date
+                    if (is_numeric($raw)) {
+                        $ts = \PHPExcel_Shared_Date::ExcelToPHP($raw);
+                        $record['transaction_date'] = date('Y-m-d H:i:s', $ts);
+                    } else {
+                        // Coba parse string: support format d/m/Y, d-m-Y, Y-m-d, dll
+                        $ts = strtotime($raw);
+                        $record['transaction_date'] = $ts ? date('Y-m-d H:i:s', $ts) : date('Y-m-d H:i:s');
+                    }
+                } else {
                     $record['transaction_date'] = date('Y-m-d H:i:s');
                 }
                 $record['created_at'] = date('Y-m-d H:i:s');
@@ -274,31 +287,32 @@ class ImportPdambjmController extends Controller
     private function getDbColumns()
     {
         return [
-            ''              => '-- Abaikan --',
-            'cust_id'       => 'No. Pelanggan (cust_id) *',
-            'nama'          => 'Nama',
-            'alamat'        => 'Alamat',
-            'blth'          => 'Bulan/Tahun Rek (blth) *',
-            'harga_air'     => 'Harga Air',
-            'abodemen'      => 'Abodemen',
-            'materai'       => 'Materai',
-            'limbah'        => 'Limbah',
-            'retribusi'     => 'Retribusi',
-            'denda'         => 'Denda',
-            'stand_lalu'    => 'Stand Lalu',
-            'stand_kini'    => 'Stand Kini',
-            'sub_total'     => 'Sub Total',
-            'admin'         => 'Admin',
-            'total'         => 'Total',
-            'idgol'         => 'ID Golongan',
-            'loket_name'    => 'Nama Loket',
-            'loket_code'    => 'Kode Loket',
-            'username'      => 'Username',
-            'jenis_loket'   => 'Jenis Loket',
-            'beban_tetap'   => 'Beban Tetap',
-            'biaya_meter'   => 'Biaya Meter',
+            ''               => '-- Abaikan --',
+            'cust_id'        => 'No. Pelanggan (cust_id) *',
+            'nama'           => 'Nama',
+            'alamat'         => 'Alamat',
+            'blth'           => 'Bulan/Tahun Rek (blth) *',
+            'transaction_date' => 'Tanggal Transaksi (YYYY-MM-DD)',
+            'harga_air'      => 'Harga Air',
+            'abodemen'       => 'Abodemen',
+            'materai'        => 'Materai',
+            'limbah'         => 'Limbah',
+            'retribusi'      => 'Retribusi',
+            'denda'          => 'Denda',
+            'stand_lalu'     => 'Stand Lalu',
+            'stand_kini'     => 'Stand Kini',
+            'sub_total'      => 'Sub Total',
+            'admin'          => 'Admin',
+            'total'          => 'Total',
+            'idgol'          => 'ID Golongan',
+            'loket_name'     => 'Nama Loket',
+            'loket_code'     => 'Kode Loket',
+            'username'       => 'Username',
+            'jenis_loket'    => 'Jenis Loket',
+            'beban_tetap'    => 'Beban Tetap',
+            'biaya_meter'    => 'Biaya Meter',
             'flag_transaksi' => 'Flag Transaksi',
-            'diskon'        => 'Diskon',
+            'diskon'         => 'Diskon',
         ];
     }
 }
