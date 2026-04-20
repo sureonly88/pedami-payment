@@ -7,6 +7,7 @@ use DB;
 use Response;
 use Excel;
 use Validator;
+use Log;
 
 class ImportPdambjmController extends Controller
 {
@@ -96,7 +97,11 @@ class ImportPdambjmController extends Controller
                 'db_columns' => $dbColumns,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Log::error('ImportPdambjm upload error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
             return Response::json([
                 'status'  => 'Error',
                 'message' => 'Gagal membaca file: ' . $e->getMessage(),
@@ -229,7 +234,11 @@ class ImportPdambjmController extends Controller
                 'skipped'  => $skipped,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Log::error('ImportPdambjm proses error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
             return Response::json([
                 'status'  => 'Error',
                 'message' => 'Gagal import: ' . $e->getMessage(),
