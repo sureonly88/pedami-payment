@@ -52,25 +52,14 @@ class ImportPdambjmController extends Controller
             $filePath = storage_path('app/import_pdambjm/' . $fileName);
 
             // Baca header dan beberapa baris sample
-            $data = Excel::load($filePath, function ($reader) {
-                $reader->noHeading();
-            })->get();
+            $rows = $this->readExcelRows($filePath);
 
-            if ($data->count() === 0 || !isset($data[0])) {
+            if (count($rows) < 2) {
                 return Response::json([
                     'status'  => 'Error',
-                    'message' => 'File Excel kosong.',
+                    'message' => 'File Excel kosong atau hanya berisi header.',
                 ], 200);
             }
-
-            // Sheet pertama
-            $sheet = $data;
-            if ($data->first() instanceof \Maatwebsite\Excel\Collections\SheetCollection
-                || $data->first() instanceof \Illuminate\Support\Collection && isset($data[0][0])) {
-                $sheet = $data->first();
-            }
-
-            $rows = $sheet->toArray();
 
             // Header = baris pertama
             $headers = [];
@@ -138,17 +127,7 @@ class ImportPdambjmController extends Controller
             }
 
             // Baca semua data
-            $data = Excel::load($filePath, function ($reader) {
-                $reader->noHeading();
-            })->get();
-
-            $sheet = $data;
-            if ($data->first() instanceof \Maatwebsite\Excel\Collections\SheetCollection
-                || $data->first() instanceof \Illuminate\Support\Collection && isset($data[0][0])) {
-                $sheet = $data->first();
-            }
-
-            $rows = $sheet->toArray();
+            $rows = $this->readExcelRows($filePath);
 
             // Hapus header row
             array_shift($rows);
@@ -250,6 +229,38 @@ class ImportPdambjmController extends Controller
                 'message' => 'Gagal import: ' . $e->getMessage(),
             ], 200);
         }
+    }
+
+    /**
+     * Baca file Excel dan kembalikan sebagai array of rows (2D array).
+     * Menangani single sheet maupun multi-sheet dari maatwebsite/excel v2.
+     */
+    private function readExcelRows($filePath)
+    {
+        $raw = Excel::load($filePath, function ($reader) {
+            $reader->noHeading();
+        })->toArray();
+
+        // toArray() pada multi-sheet: [ [sheet1_rows...], [sheet2_rows...] ]
+        // toArray() pada single-sheet: [ [row1_cells...], [row2_cells...] ]
+        // Deteksi dengan mengecek apakah elemen pertama adalah array of arrays
+        if (isset($raw[0]) && is_array($raw[0]) && !empty($raw[0]) && is_array(reset($raw[0]))) {
+            // Multi-sheet: ambil sheet pertama
+            $rows = $raw[0];
+        } else {
+            $rows = $raw;
+        }
+
+        // Normalisasi tiap row menjadi indexed array (buang null-only trailing cells)
+        $normalized = [];
+        foreach ($rows as $row) {
+            if (is_object($row)) {
+                $row = (array) $row;
+            }
+            $normalized[] = array_values((array) $row);
+        }
+
+        return $normalized;
     }
 
     /**
