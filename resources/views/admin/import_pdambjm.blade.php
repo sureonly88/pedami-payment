@@ -188,9 +188,10 @@ $(document).ready(function () {
                     showPesan(msg.message);
                 }
             },
-            error: function () {
+            error: function (xhr) {
                 btn.prop('disabled', false).html('<i class="fa fa-upload"></i> Upload & Baca Header');
-                showPesan('Terjadi kesalahan saat upload file.');
+                var info = xhr.status ? ' (HTTP ' + xhr.status + ')' : '';
+                showPesan('Terjadi kesalahan saat upload file' + info + '. Pastikan folder storage/app/import_pdambjm dapat ditulis oleh web server.');
             }
         });
     });

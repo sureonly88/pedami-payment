@@ -47,7 +47,13 @@ class ImportPdambjmController extends Controller
 
             $file     = $request->file('file_excel');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->move(storage_path('app/import_pdambjm'), $fileName);
+
+            $destDir = storage_path('app/import_pdambjm');
+            if (!is_dir($destDir)) {
+                mkdir($destDir, 0755, true);
+            }
+
+            $file->move($destDir, $fileName);
 
             $filePath = storage_path('app/import_pdambjm/' . $fileName);
 
