@@ -27,6 +27,8 @@ class ImportPdambjmController extends Controller
     public function upload(Request $request)
     {
         try {
+            ini_set('memory_limit', '512M');
+
             $validator = Validator::make($request->all(), [
                 'file_excel' => 'required|file',
             ]);
@@ -55,46 +57,52 @@ class ImportPdambjmController extends Controller
             }
 
             $file->move($destDir, $fileName);
-
             $filePath = storage_path('app/import_pdambjm/' . $fileName);
 
-            // Baca header dan beberapa baris sample
-            $rows = $this->readExcelRows($filePath);
+            // Buka Excel dengan PHPExcel row iterator — hemat memory
+            $objReader = \PHPExcel_IOFactory::createReaderForFile($filePath);
+            $objReader->setReadDataOnly(true);
+            $objExcel  = $objReader->load($filePath);
+            $sheet     = $objExcel->getActiveSheet();
 
-            if (count($rows) < 2) {
+            $headers = [];
+            $sample  = [];
+            $rowNum  = 0;
+
+            foreach ($sheet->getRowIterator() as $row) {
+                $rowNum++;
+                $cells = [];
+                $cellIter = $row->getCellIterator();
+                $cellIter->setIterateOnlyExistingCells(false);
+                foreach ($cellIter as $cell) {
+                    $cells[] = trim((string) $cell->getValue());
+                }
+
+                if ($rowNum === 1) {
+                    $headers = $cells;
+                } else {
+                    $sample[] = $cells;
+                    if (count($sample) >= 5) break;
+                }
+            }
+
+            // Bebaskan memory segera
+            $objExcel->disconnectWorksheets();
+            unset($objExcel, $objReader);
+
+            if (empty($headers)) {
                 return Response::json([
                     'status'  => 'Error',
-                    'message' => 'File Excel kosong atau hanya berisi header.',
+                    'message' => 'File Excel kosong atau tidak bisa dibaca.',
                 ], 200);
             }
-
-            // Header = baris pertama
-            $headers = [];
-            if (count($rows) > 0) {
-                foreach ($rows[0] as $idx => $val) {
-                    $headers[] = trim((string) $val);
-                }
-            }
-
-            // Sample data (5 baris setelah header)
-            $sample = [];
-            for ($i = 1; $i <= min(5, count($rows) - 1); $i++) {
-                $row = [];
-                foreach ($rows[$i] as $val) {
-                    $row[] = (string) $val;
-                }
-                $sample[] = $row;
-            }
-
-            // Kolom database yang bisa di-mapping
-            $dbColumns = $this->getDbColumns();
 
             return Response::json([
                 'status'     => 'Success',
                 'file_name'  => $fileName,
                 'headers'    => $headers,
                 'sample'     => $sample,
-                'db_columns' => $dbColumns,
+                'db_columns' => $this->getDbColumns(),
             ], 200);
 
         } catch (\Throwable $e) {
@@ -115,11 +123,14 @@ class ImportPdambjmController extends Controller
     public function proses(Request $request)
     {
         try {
-            $fileName = $request->input('file_name');
-            $mapping  = $request->input('mapping'); // array: index_excel => db_column
-            $loketCode = $request->input('loket_code');
-            $username  = $request->input('username');
-            $jenisLoket = $request->input('jenis_loket', 'GATEWAY');
+            ini_set('memory_limit', '512M');
+            ini_set('max_execution_time', '300');
+
+            $fileName   = $request->input('file_name');
+            $mapping    = $request->input('mapping');
+            $loketCode  = $request->input('loket_code');
+            $username   = $request->input('username');
+            $jenisLoket = $request->input('jenis_loket', 'ADMIN');
 
             if (!$fileName || !$mapping) {
                 return Response::json([
@@ -137,31 +148,46 @@ class ImportPdambjmController extends Controller
                 ], 200);
             }
 
-            // Baca semua data
-            $rows = $this->readExcelRows($filePath);
+            // Buka Excel dengan PHPExcel row iterator — hemat memory
+            $objReader = \PHPExcel_IOFactory::createReaderForFile($filePath);
+            $objReader->setReadDataOnly(true);
+            $objExcel  = $objReader->load($filePath);
+            $sheet     = $objExcel->getActiveSheet();
 
-            // Hapus header row
-            array_shift($rows);
+            $numericFields = ['harga_air','abodemen','materai','limbah','retribusi','denda',
+                              'stand_lalu','stand_kini','sub_total','admin','total',
+                              'beban_tetap','biaya_meter','diskon'];
 
             $inserted  = 0;
             $skipped   = 0;
-            $errors    = [];
             $batchSize = 100;
             $batch     = [];
+            $isHeader  = true;
 
-            foreach ($rows as $rowIdx => $row) {
-                $record = [];
-
-                foreach ($mapping as $excelIdx => $dbCol) {
-                    if ($dbCol === '' || $dbCol === null) continue;
-                    $value = isset($row[$excelIdx]) ? trim((string) $row[$excelIdx]) : '';
-                    $record[$dbCol] = $value;
-                }
-
-                // Skip baris kosong (tidak ada cust_id)
-                if (empty($record['cust_id'])) {
+            foreach ($sheet->getRowIterator() as $row) {
+                // Lewati baris header
+                if ($isHeader) {
+                    $isHeader = false;
                     continue;
                 }
+
+                // Baca cells row ini
+                $cells = [];
+                $cellIter = $row->getCellIterator();
+                $cellIter->setIterateOnlyExistingCells(false);
+                foreach ($cellIter as $cell) {
+                    $cells[] = $cell->getValue();
+                }
+
+                // Terapkan mapping
+                $record = [];
+                foreach ($mapping as $excelIdx => $dbCol) {
+                    if ($dbCol === '' || $dbCol === null) continue;
+                    $record[$dbCol] = isset($cells[$excelIdx]) ? trim((string) $cells[$excelIdx]) : '';
+                }
+
+                // Skip baris kosong
+                if (empty($record['cust_id'])) continue;
 
                 // Cek duplikat cust_id + blth
                 $blth = isset($record['blth']) ? $record['blth'] : '';
@@ -170,42 +196,35 @@ class ImportPdambjmController extends Controller
                         ->where('cust_id', $record['cust_id'])
                         ->where('blth', $blth)
                         ->exists();
-
                     if ($exists) {
                         $skipped++;
                         continue;
                     }
                 }
 
-                // Generate transaction_code otomatis
+                // Generate transaction_code
                 $record['transaction_code'] = strtoupper(date('YmdHis') . '-' . uniqid());
 
-                // Set default fields
-                if (!empty($loketCode)) {
+                // Default fields
+                if (!empty($loketCode) && empty($record['loket_code'])) {
                     $record['loket_code'] = $loketCode;
                 }
-                if (!empty($username)) {
+                if (!empty($username) && empty($record['username'])) {
                     $record['username'] = $username;
                 }
-                if (!isset($record['jenis_loket']) || empty($record['jenis_loket'])) {
+                if (empty($record['jenis_loket'])) {
                     $record['jenis_loket'] = $jenisLoket;
                 }
-
+                if (empty($record['transaction_date'])) {
+                    $record['transaction_date'] = date('Y-m-d H:i:s');
+                }
                 $record['created_at'] = date('Y-m-d H:i:s');
                 $record['updated_at'] = date('Y-m-d H:i:s');
 
-                // Set transaction_date jika tidak di-mapping
-                if (!isset($record['transaction_date']) || empty($record['transaction_date'])) {
-                    $record['transaction_date'] = date('Y-m-d H:i:s');
-                }
-
-                // Cast numeric fields
-                $numericFields = ['harga_air', 'abodemen', 'materai', 'limbah', 'retribusi', 'denda',
-                                  'stand_lalu', 'stand_kini', 'sub_total', 'admin', 'total',
-                                  'beban_tetap', 'biaya_meter', 'diskon'];
+                // Cast numeric
                 foreach ($numericFields as $nf) {
-                    if (isset($record[$nf])) {
-                        $record[$nf] = (float) str_replace([',', '.'], ['', '.'], $record[$nf]);
+                    if (isset($record[$nf]) && $record[$nf] !== '') {
+                        $record[$nf] = (float) str_replace(',', '', $record[$nf]);
                     }
                 }
 
@@ -218,13 +237,16 @@ class ImportPdambjmController extends Controller
                 }
             }
 
+            // Bebaskan memory
+            $objExcel->disconnectWorksheets();
+            unset($objExcel, $objReader);
+
             // Insert sisa batch
             if (count($batch) > 0) {
                 DB::table('pdambjm_trans')->insert($batch);
                 $inserted += count($batch);
             }
 
-            // Hapus file temporary
             @unlink($filePath);
 
             return Response::json([
@@ -244,38 +266,6 @@ class ImportPdambjmController extends Controller
                 'message' => 'Gagal import: ' . $e->getMessage(),
             ], 200);
         }
-    }
-
-    /**
-     * Baca file Excel dan kembalikan sebagai array of rows (2D array).
-     * Menangani single sheet maupun multi-sheet dari maatwebsite/excel v2.
-     */
-    private function readExcelRows($filePath)
-    {
-        $raw = Excel::load($filePath, function ($reader) {
-            $reader->noHeading();
-        })->toArray();
-
-        // toArray() pada multi-sheet: [ [sheet1_rows...], [sheet2_rows...] ]
-        // toArray() pada single-sheet: [ [row1_cells...], [row2_cells...] ]
-        // Deteksi dengan mengecek apakah elemen pertama adalah array of arrays
-        if (isset($raw[0]) && is_array($raw[0]) && !empty($raw[0]) && is_array(reset($raw[0]))) {
-            // Multi-sheet: ambil sheet pertama
-            $rows = $raw[0];
-        } else {
-            $rows = $raw;
-        }
-
-        // Normalisasi tiap row menjadi indexed array (buang null-only trailing cells)
-        $normalized = [];
-        foreach ($rows as $row) {
-            if (is_object($row)) {
-                $row = (array) $row;
-            }
-            $normalized[] = array_values((array) $row);
-        }
-
-        return $normalized;
     }
 
     /**
