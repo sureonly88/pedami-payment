@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'mobile' => \App\Http\Middleware\MobileChecking::class,
         'akses_pln_andro' => \App\Http\Middleware\disablePLNAndro::class,
         'api_rekanan' => \App\Http\Middleware\apiRekanan::class,
+        'throttle_gateway' => \App\Http\Middleware\ThrottleApiRekanan::class,
         'secure' => \App\Http\Middleware\RedirectHttps::class,
 
         'berita' => \App\Http\Middleware\Permissions\konfigBerita::class,

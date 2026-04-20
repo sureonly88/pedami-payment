@@ -293,8 +293,9 @@ Route::group(['prefix' => 'mobile'], function()
 //ROUTE UNTUK API REKANAN
 Route::group(['prefix' => 'gateway'], function()
 {
-    Route::get('sisa_saldo','RekananAPIController@sisaSaldo')->middleware('api_rekanan');
-    Route::get('pdambjm/inquery/{idpel}','RekananAPIController@inquery')->middleware('api_rekanan');
-    Route::post('pdambjm/payment','RekananAPIController@payment')->middleware('api_rekanan');
+    // throttle_gateway:{max_attempts},{decay_minutes} — keyed by api-token per loket
+    Route::get('sisa_saldo','RekananAPIController@sisaSaldo')->middleware('api_rekanan','throttle_gateway:30,1');
+    Route::get('pdambjm/inquery/{idpel}','RekananAPIController@inquery')->middleware('api_rekanan','throttle_gateway:60,1');
+    Route::post('pdambjm/payment','RekananAPIController@payment')->middleware('api_rekanan','throttle_gateway:30,1');
 });
 
