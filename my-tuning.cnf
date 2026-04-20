@@ -5,14 +5,14 @@ skip_name_resolve = 1
 max_connections   = 800          # payung saat spike (MaxScale meredam di depan)
 back_log          = 1024
 connect_timeout   = 5
-wait_timeout      = 30
-interactive_timeout = 60
+wait_timeout      = 120
+interactive_timeout = 120
 max_allowed_packet = 256M
 thread_cache_size  = 256
 open_files_limit   = 1048576
 max_connect_errors = 1000000
-net_read_timeout   = 30
-net_write_timeout  = 30
+net_read_timeout   = 60
+net_write_timeout  = 60
 
 # --- InnoDB (utama) ---
 innodb_buffer_pool_size       = 10G      # ~60–65% dari 16GB
