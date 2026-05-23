@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\ReportApiToken;
+use Illuminate\Support\Carbon;
 use Response;
 
 class apiReport
@@ -40,7 +41,7 @@ class apiReport
 
         // Update last_used_at (silent update)
         $apiToken->timestamps = false;
-        $apiToken->last_used_at = now();
+        $apiToken->last_used_at = Carbon::now();
         $apiToken->save();
 
         // Simpan data token ke request agar controller bisa pakai tanpa query ulang
