@@ -92,5 +92,6 @@ class Kernel extends HttpKernel
         'settingrek' => \App\Http\Middleware\Permissions\aksesSettingRekPdam::class,
         'transaksi' => \App\Http\Middleware\Permissions\trxTransaksi::class,
         'trxadvise' => \App\Http\Middleware\Permissions\trxAdvise::class,
+        'api_report' => \App\Http\Middleware\apiReport::class,
     ];
 }

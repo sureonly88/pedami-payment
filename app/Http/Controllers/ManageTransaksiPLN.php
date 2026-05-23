@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Input;
 use Validator;
 use Response;
 use App\Models\PlnTransaksi;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class ManageTransaksiPLN extends Controller
@@ -25,7 +26,11 @@ class ManageTransaksiPLN extends Controller
 
 	public function index()
 	{
-		return view('admin.man_transaksi_pln')->with('user', Helpers::getLoginDetail());
+		$users = User::select('username')->orderBy('username','asc')->get();
+
+		return view('admin.man_transaksi_pln')
+			->with('user', Helpers::getLoginDetail())
+			->with('list_users', $users);
 	}
 
 	public function simpanData(){
@@ -33,10 +38,31 @@ class ManageTransaksiPLN extends Controller
 
 			$Data = Input::all()['Data'];
 			$username = Auth::user()->username;
+			$loketInfo = null;
+
+			if(!empty($Data['username'])){
+				$loketInfo = $this->getLoketByUsername($Data['username']);
+
+				if(!$loketInfo || empty($loketInfo->loket_code)){
+					return Response::json(array(
+						'status' => 'Error',
+						'message' => array('Username tidak memiliki relasi loket yang valid.')
+					),200);
+				}
+
+				$Data['loket_name'] = $loketInfo->loket_name;
+				$Data['loket_code'] = $loketInfo->loket_code;
+				$Data['jenis_loket'] = $loketInfo->jenis_loket;
+			}
 			
 			//Edit Validator Here
 			$rules = array(
-		        'subcriber_id' => 'required','subcriber_name' => 'required','bill_periode' => 'required'
+		        'subcriber_id' => 'required',
+		        'subcriber_name' => 'required',
+		        'bill_periode' => 'required',
+		        'username' => 'required',
+		        'loket_name' => 'required',
+		        'loket_code' => 'required'
 		    );
 
 		    $validator = Validator::make($Data, $rules);
@@ -80,6 +106,40 @@ class ManageTransaksiPLN extends Controller
             return Response::json(array(
                 'status' => 'Error',
                 'message' => array($error),
+            ),200);
+		}
+	}
+
+	private function getLoketByUsername($username)
+	{
+		return DB::table('users')
+			->leftJoin('lokets','users.loket_id','=','lokets.id')
+			->where('users.username',$username)
+			->select(
+				'users.username',
+				'lokets.nama as loket_name',
+				'lokets.loket_code',
+				'lokets.jenis as jenis_loket'
+			)
+			->first();
+	}
+
+	public function getInfoLoket($username){
+		try{
+			$cekId = $this->getLoketByUsername($username);
+
+			return Response::json(array(
+				'status' => 'Success',
+				'message' => '-',
+				'data' => $cekId,
+			),200);
+		}catch (\Exception $e){
+
+			$error = explode("\r\n",$e->getMessage());
+            return Response::json(array(
+                'status' => 'Error',
+                'message' => $error,
+                'data' => ''
             ),200);
 		}
 	}

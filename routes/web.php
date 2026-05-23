@@ -165,6 +165,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth'] ], function()
 
     //Manage data PLN Pascabayar
     Route::get('man_transaksi_pln', 'ManageTransaksiPLN@index')->middleware('manageTrx');
+    Route::get('man_transaksi_pln/info_loket/{username}', 'ManageTransaksiPLN@getInfoLoket')->middleware('manageTrx');
     Route::get('man_transaksi_pln/edit/{id}', 'ManageTransaksiPLN@getEdit')->middleware('manageTrx');
     Route::get('man_transaksi_pln/list', 'ManageTransaksiPLN@getList')->middleware('manageTrx');
     Route::post('man_transaksi_pln/simpan', 'ManageTransaksiPLN@simpanData')->middleware('manageTrx');
@@ -304,3 +305,18 @@ Route::group(['prefix' => 'gateway'], function()
     Route::post('pdambjm/payment','RekananAPIController@payment')->middleware('api_rekanan','throttle_gateway:30,1');
 });
 
+//ROUTE UNTUK API LAPORAN (TOKEN TERPISAH - header: report-token)
+Route::group(['prefix' => 'report', 'middleware' => ['api_report','throttle_gateway:60,1']], function()
+{
+    // PDAM
+    Route::get('pdam/rekap', 'ReportAPIController@rekapPdam');
+    Route::get('pdam/detail', 'ReportAPIController@detailPdam');
+
+    // PLN Postpaid
+    Route::get('pln/postpaid/rekap', 'ReportAPIController@rekapPlnPostpaid');
+    Route::get('pln/postpaid/detail', 'ReportAPIController@detailPlnPostpaid');
+
+    // PLN Prepaid
+    Route::get('pln/prepaid/rekap', 'ReportAPIController@rekapPlnPrepaid');
+    Route::get('pln/prepaid/detail', 'ReportAPIController@detailPlnPrepaid');
+});

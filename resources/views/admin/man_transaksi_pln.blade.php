@@ -9,6 +9,11 @@
 
 <script>
 	$(document).ready(function() {
+		if ($.fn.select2) {
+			$('#username').select2({
+				width: '100%'
+			});
+		}
 		$('#listData').DataTable();
         LoadData();
         $.fn.modal.Constructor.prototype.enforceFocus = function() {};
@@ -19,7 +24,35 @@
 
     function Kosongkan(){
 
-		$('#subcriber_id').val('');$('#subcriber_name').val('');$('#subcriber_segment').val('');$('#switcher_ref').val('');$('#power_consumtion').val('');$('#trace_audit_number').val('');$('#bill_periode').val('');$('#added_tax').val('');$('#incentive').val('');$('#penalty_fee').val('');$('#admin_charge').val('');$('#total_elec_bill').val('');$('#username').val('');$('#loket_name').val('');$('#loket_code').val('');$('#jenis_loket').val('');$('#transaction_code').val('');$('#transaction_date').val('');$('#outstanding_bill').val('');$('#bill_status').val('');$('#prev_meter_read_1').val('');$('#curr_meter_read_1').val('');$('#prev_meter_read_2').val('');$('#curr_meter_read_2').val('');$('#prev_meter_read_3').val('');$('#curr_meter_read_3').val('');
+		$('#subcriber_id').val('');$('#subcriber_name').val('');$('#subcriber_segment').val('');$('#switcher_ref').val('');$('#power_consumtion').val('');$('#trace_audit_number').val('');$('#bill_periode').val('');$('#added_tax').val('');$('#incentive').val('');$('#penalty_fee').val('');$('#admin_charge').val('');$('#total_elec_bill').val('');$('#username').val('').change();$('#loket_name').val('');$('#loket_code').val('');$('#jenis_loket').val('');$('#transaction_code').val('');$('#transaction_date').val('');$('#outstanding_bill').val('');$('#bill_status').val('');$('#prev_meter_read_1').val('');$('#curr_meter_read_1').val('');$('#prev_meter_read_2').val('');$('#curr_meter_read_2').val('');$('#prev_meter_read_3').val('');$('#curr_meter_read_3').val('');
+    }
+
+    function getLoket(){
+        var mUsername = $('#username').val();
+
+        if(!mUsername){
+            $('#loket_name').val('');
+            $('#loket_code').val('');
+            $('#jenis_loket').val('');
+            return;
+        }
+
+        $.ajaxSetup({ cache: false });
+        $.getJSON("{{ secure_url('admin/man_transaksi_pln/info_loket') }}/"+encodeURIComponent(mUsername), function(msg){
+            if(msg.status == "Success" && msg.data){
+                $('#loket_name').val(msg.data.loket_name || '');
+                $('#loket_code').val(msg.data.loket_code || '');
+                $('#jenis_loket').val(msg.data.jenis_loket || '');
+            }else{
+                $('#loket_name').val('');
+                $('#loket_code').val('');
+                $('#jenis_loket').val('');
+            }
+        }).error(function(){
+            $('#loket_name').val('');
+            $('#loket_code').val('');
+            $('#jenis_loket').val('');
+        });
     }
 
     function showDialog(){
@@ -167,7 +200,7 @@
                 $('#penalty_fee').val(msg.data.penalty_fee);
                 $('#admin_charge').val(msg.data.admin_charge);
                 $('#total_elec_bill').val(msg.data.total_elec_bill);
-                $('#username').val(msg.data.username);
+                $('#username').val(msg.data.username).change();
                 $('#loket_name').val(msg.data.loket_name);
                 $('#loket_code').val(msg.data.loket_code);
                 $('#jenis_loket').val(msg.data.jenis_loket);
@@ -310,7 +343,17 @@
                     <div class="col-md-6">
                         <div class='form-group'><label for='subcriber_id' >SUBCRIBER_ID</label><input type='text' class='form-control' id='subcriber_id' placeholder='Enter SUBCRIBER_ID'></div><div class='form-group'><label for='subcriber_name' >SUBCRIBER_NAME</label><input type='text' class='form-control' id='subcriber_name' placeholder='Enter SUBCRIBER_NAME'></div><div class='form-group'><label for='subcriber_segment' >SUBCRIBER_SEGMENT</label><input type='text' class='form-control' id='subcriber_segment' placeholder='Enter SUBCRIBER_SEGMENT'></div><div class='form-group'><label for='switcher_ref' >SWITCHER_REF</label><input type='text' class='form-control' id='switcher_ref' placeholder='Enter SWITCHER_REF'></div><div class='form-group'><label for='power_consumtion' >POWER_CONSUMTION</label><input type='text' class='form-control' id='power_consumtion' placeholder='Enter POWER_CONSUMTION'></div><div class='form-group'><label for='trace_audit_number' >TRACE_AUDIT_NUMBER</label><input type='text' class='form-control' id='trace_audit_number' placeholder='Enter TRACE_AUDIT_NUMBER'></div>
 
-                        <div class='form-group'><label for='total_elec_bill' >TOTAL_ELEC_BILL</label><input type='text' class='form-control' id='total_elec_bill' placeholder='Enter TOTAL_ELEC_BILL'></div><div class='form-group'><label for='username' >USERNAME</label><input type='text' class='form-control' id='username' placeholder='Enter USERNAME'></div><div class='form-group'><label for='loket_name' >LOKET_NAME</label><input type='text' class='form-control' id='loket_name' placeholder='Enter LOKET_NAME'></div><div class='form-group'><label for='loket_code' >LOKET_CODE</label><input type='text' class='form-control' id='loket_code' placeholder='Enter LOKET_CODE'></div><div class='form-group'><label for='jenis_loket' >JENIS_LOKET</label><input type='text' class='form-control' id='jenis_loket' placeholder='Enter JENIS_LOKET'></div><div class='form-group'><label for='transaction_code' >TRANSACTION_CODE</label><input type='text' class='form-control' id='transaction_code' placeholder='Enter TRANSACTION_CODE'></div>
+                        <div class='form-group'><label for='total_elec_bill' >TOTAL_ELEC_BILL</label><input type='text' class='form-control' id='total_elec_bill' placeholder='Enter TOTAL_ELEC_BILL'></div>
+                        <div class='form-group'>
+                            <label for='username' >USERNAME</label>
+                            <select class='form-control' id='username' onchange='getLoket()' style='width: 100%'>
+                                <option value=''>-- PILIH USERNAME --</option>
+                                @foreach($list_users as $list_user)
+                                    <option value='{{ $list_user->username }}'>{{ $list_user->username }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class='form-group'><label for='loket_name' >LOKET_NAME</label><input type='text' class='form-control' id='loket_name' placeholder='LOKET_NAME otomatis dari user' readonly='readonly'></div><div class='form-group'><label for='loket_code' >LOKET_CODE</label><input type='text' class='form-control' id='loket_code' placeholder='LOKET_CODE otomatis dari user' readonly='readonly'></div><div class='form-group'><label for='jenis_loket' >JENIS_LOKET</label><input type='text' class='form-control' id='jenis_loket' placeholder='JENIS_LOKET otomatis dari user' readonly='readonly'></div><div class='form-group'><label for='transaction_code' >TRANSACTION_CODE</label><input type='text' class='form-control' id='transaction_code' placeholder='Enter TRANSACTION_CODE'></div>
                         <div class='form-group'><label for='transaction_date' >TRANSACTION_DATE</label><input type='text' class='form-control' id='transaction_date' placeholder='Enter TRANSACTION_DATE'></div>
                     </div>
                     <div class="col-md-6">
