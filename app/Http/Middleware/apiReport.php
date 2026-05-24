@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\ReportApiToken;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Response;
 
 class apiReport
