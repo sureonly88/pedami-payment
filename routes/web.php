@@ -319,4 +319,7 @@ Route::group(['prefix' => 'report', 'middleware' => ['api_report','throttle_gate
     // PLN Prepaid
     Route::get('pln/prepaid/rekap', 'ReportAPIController@rekapPlnPrepaid');
     Route::get('pln/prepaid/detail', 'ReportAPIController@detailPlnPrepaid');
+
+    // Export untuk import ke percobaan (multi_payment format)
+    Route::get('export/transaksi', 'ReportAPIController@exportTransaksi');
 });
