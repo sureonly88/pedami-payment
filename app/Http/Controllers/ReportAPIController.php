@@ -437,8 +437,12 @@ class ReportAPIController extends Controller
 
         return $this->runExportQuery($query, $page, $perPage, 'EXPORT TRANSAKSI PDAM', function ($row) {
             $status     = $this->mapProcessingStatus($row->processing_status ?? null);
-            $multiCode  = 'LEGACY-PDAM-' . $row->transaction_code;
-            $idKey      = 'legacy-pdam-' . strtolower($row->transaction_code);
+            // Kunci unik berbasis cust_id + blth agar setiap pelanggan+periode
+            // mendapat baris tersendiri, meskipun transaction_code-nya sama
+            // (terjadi saat satu sesi pembayaran mencakup beberapa bulan tunggakan).
+            $blthClean  = preg_replace('/[^a-zA-Z0-9]/', '', (string)($row->blth ?? ''));
+            $multiCode  = 'LEGACY-PDAM-' . ($row->cust_id ?? '') . '-' . $blthClean;
+            $idKey      = 'legacy-pdam-' . strtolower((string)($row->cust_id ?? '')) . '-' . strtolower($blthClean);
             $amount     = (float) ($row->sub_total ?? 0);
             $adminFee   = (float) ($row->admin    ?? 0);
             $total      = (float) ($row->total    ?? 0);
@@ -591,7 +595,10 @@ class ReportAPIController extends Controller
         return $this->runExportQuery($query, $page, $perPage, 'EXPORT TRANSAKSI PLN PREPAID', function ($row) {
             $multiCode = 'LEGACY-PLNP-' . $row->transaction_code;
             $idKey     = 'legacy-plnp-' . strtolower($row->transaction_code);
-            $amount    = (float) ($row->cust_payable  ?? 0);
+            // cust_payable bisa 0 di data lama; gunakan rupiah_token sebagai nilai token yang benar
+            $rupiahToken = (float) ($row->rupiah_token ?? 0);
+            $custPayable = (float) ($row->cust_payable ?? 0);
+            $amount    = $rupiahToken > 0 ? $rupiahToken : $custPayable;
             $adminFee  = (float) ($row->admin_charge  ?? 0);
             $total     = $amount + $adminFee;
 
@@ -630,6 +637,7 @@ class ReportAPIController extends Controller
                     'created_at'       => $row->created_at ?? $row->transaction_date,
                     'metadata_json'    => [
                         'source'              => 'pedami-payment',
+                        'rupiah_token'        => $rupiahToken,
                         'token_number'        => (string) ($row->token_number        ?? ''),
                         'material_number'     => (string) ($row->material_number     ?? ''),
                         'pln_ref_number'      => (string) ($row->pln_ref_number      ?? ''),
