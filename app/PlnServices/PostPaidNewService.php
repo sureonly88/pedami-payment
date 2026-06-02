@@ -174,7 +174,7 @@ class PostPaidNewService
             //         'input2'        => '',
             //         'input3'        => '',
             //         'id_trx'        => $idTrx,
-            //         'kode_produk'   => 'pln-postpaid-3500',
+            //         'kode_produk'   => 'pln-postpaid-4500',
             //         'access_token'  => $token,
             //         'id_app'        => env('PLN_LUNASIN_ID','')
             //     ]
@@ -189,7 +189,7 @@ class PostPaidNewService
 				"input2":"",
 				"input3":"",
 				"id_trx":"'.$idTrx.'",
-				"kode_produk":"pln-postpaid-3500",
+				"kode_produk":"pln-postpaid-4500",
 				"access_token":"'.$token.'",
 				"id_app":"'.env('PLN_LUNASIN_ID','').'"
 			}';
@@ -207,7 +207,7 @@ class PostPaidNewService
             //     "input2":"",
             //     "input3":"",
             //     "id_trx":"158997790078304",
-            //     "kode_produk":"pln-postpaid-3500",
+            //     "kode_produk":"pln-postpaid-4500",
             //     "access_token":"d1748a29-9a6a-11ea-bd8f-5600029b5e6d",
             //     "id_app":"5a4593979bba4d923638d199d4ebbdaa1581729443331",
             
@@ -340,7 +340,7 @@ class PostPaidNewService
             //         'input2'        => '',
             //         'input3'        => '',
             //         'id_trx'        => $payment_message,
-            //         'kode_produk'   => 'pln-postpaid-3500',
+            //         'kode_produk'   => 'pln-postpaid-4500',
             //         'access_token'  => $token,
             //         'id_app'        => env('PLN_LUNASIN_ID','')
             //     ]
@@ -353,7 +353,7 @@ class PostPaidNewService
 				"input2":"",
 				"input3":"",
 				"id_trx":"'.$payment_message.'",
-				"kode_produk":"pln-postpaid-3500",
+				"kode_produk":"pln-postpaid-4500",
 				"access_token":"'.$token.'",
 				"id_app":"'.env('PLN_LUNASIN_ID','').'"
 			}';
@@ -365,7 +365,7 @@ class PostPaidNewService
 				"input2":"",
 				"input3":"",
 				"id_trx":"'.$payment_message.'",
-				"kode_produk":"pln-postpaid-3500",
+				"kode_produk":"pln-postpaid-4500",
 				"access_token":"'.$token.'",
 				"id_app":"'.env('PLN_LUNASIN_ID','').'"
 			}';
@@ -393,7 +393,7 @@ class PostPaidNewService
             //     "input2":"",
             //     "input3":"",
             //     "id_trx":"158997790078304",
-            //     "kode_produk":"pln-postpaid-3500",
+            //     "kode_produk":"pln-postpaid-4500",
             //     "access_token":"d1748a29-9a6a-11ea-bd8f-5600029b5e6d",
             //     "id_app":"5a4593979bba4d923638d199d4ebbdaa1581729443331",
             //     "data":
