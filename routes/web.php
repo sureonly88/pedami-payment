@@ -322,4 +322,7 @@ Route::group(['prefix' => 'report', 'middleware' => ['api_report','throttle_gate
 
     // Export untuk import ke percobaan (multi_payment format)
     Route::get('export/transaksi', 'ReportAPIController@exportTransaksi');
+
+    // Migrasi raw data pdambjm_trans ke web kasir
+    Route::get('migrasi/pdambjm', 'ReportAPIController@migrasiPdambjm');
 });
