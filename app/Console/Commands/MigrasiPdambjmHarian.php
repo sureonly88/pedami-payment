@@ -89,7 +89,7 @@ class MigrasiPdambjmHarian extends Command
         $this->info(" Tanggal: {$tglAwal} s/d {$tglAkhir}");
         $this->info(" Loket  : " . ($loketCode ?: 'semua'));
         $this->info(" PerPage: {$perPage}");
-        $this->info(" Mulai  : " . now()->format('Y-m-d H:i:s'));
+        $this->info(" Mulai  : " . Carbon::now()->format('Y-m-d H:i:s'));
         $this->info("-------------------------------------------------");
 
         $startTime = microtime(true);
@@ -106,7 +106,7 @@ class MigrasiPdambjmHarian extends Command
 
         $elapsed = round(microtime(true) - $startTime, 2);
 
-        $this->info(" Selesai: " . now()->format('Y-m-d H:i:s') . " ({$elapsed} detik)");
+        $this->info(" Selesai: " . Carbon::now()->format('Y-m-d H:i:s') . " ({$elapsed} detik)");
         $this->info("-------------------------------------------------");
         $this->info(" Total diambil  : {$result['total_fetched']}");
         $this->info(" Total upsert   : {$result['total_upsert']}");
