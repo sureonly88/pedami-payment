@@ -637,7 +637,7 @@ class ReportAPIController extends Controller
             ], 403);
         }
 
-        if ($request->filled('username')) {
+        if ($request->input('username')) {
             $query->where('username', $request->input('username'));
         }
 
