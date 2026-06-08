@@ -4,6 +4,7 @@ Dokumentasi endpoint untuk mengambil data lengkap (raw) dari tabel `pdambjm_tran
 
 ---
 
+<<<<<<< HEAD
 ## Konfigurasi `.env` (Server Kasir)
 
 Tambahkan 2 baris berikut ke file `.env` di **server kasir**:
@@ -15,6 +16,8 @@ MIGRASI_SWITCHER_TOKEN=report_api_token_20260427_pedami_001
 
 ---
 
+=======
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
 ## Autentikasi
 
 Semua request ke endpoint ini **wajib** menyertakan header:
@@ -118,8 +121,13 @@ GET /report/migrasi/pdambjm
 
 ```bash
 curl -X GET \
+<<<<<<< HEAD
   "https://gateway.paymentpedami.com/report/migrasi/pdambjm?tgl_awal=2024-01-01&tgl_akhir=2024-01-01&page=1&per_page=500" \
   -H "report-token: report_api_token_20260427_pedami_001"
+=======
+  "https://switcher.contoh.com/report/migrasi/pdambjm?tgl_awal=2024-01-01&tgl_akhir=2024-01-01&page=1&per_page=500" \
+  -H "report-token: YOUR_TOKEN_HERE"
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
 ```
 
 ### PHP (menggunakan Guzzle)
@@ -129,6 +137,7 @@ use GuzzleHttp\Client;
 
 $client = new Client();
 
+<<<<<<< HEAD
 $response = $client->get('https://gateway.paymentpedami.com/report/migrasi/pdambjm', [
     'headers' => [
         'report-token' => env('MIGRASI_SWITCHER_TOKEN'),
@@ -139,10 +148,37 @@ $response = $client->get('https://gateway.paymentpedami.com/report/migrasi/pdamb
         'tgl_akhir' => '2024-01-01',
         'page'      => 1,
         'per_page'  => 1000,
+=======
+$tglAwal  = '2024-01-01';
+$tglAkhir = '2024-01-01';
+$perPage  = 500;
+$page     = 1;
+
+$response = $client->get('https://switcher.contoh.com/report/migrasi/pdambjm', [
+    'headers' => [
+        'report-token' => 'YOUR_TOKEN_HERE',
+        'Accept'       => 'application/json',
+    ],
+    'query' => [
+        'tgl_awal'  => $tglAwal,
+        'tgl_akhir' => $tglAkhir,
+        'page'      => $page,
+        'per_page'  => $perPage,
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
     ],
 ]);
 
 $body = json_decode($response->getBody(), true);
+<<<<<<< HEAD
+=======
+
+if ($body['status'] === true) {
+    $data       = $body['data'];         // array data transaksi
+    $pagination = $body['pagination'];   // info pagination
+    
+    // proses data...
+}
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
 ```
 
 ---
@@ -152,6 +188,7 @@ $body = json_decode($response->getBody(), true);
 Karena dalam 1 hari bisa ada **30.000+ transaksi**, gunakan loop paginasi untuk mengambil semua data:
 
 ```php
+<<<<<<< HEAD
 $page     = 1;
 $lastPage = 1;
 
@@ -232,12 +269,74 @@ Laravel Scheduler sudah dikonfigurasi di `app/Console/Kernel.php` untuk menjalan
 ```cron
 # Cron untuk Laravel Scheduler (1 baris untuk semua command)
 * * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
+=======
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+function importPdambjmTrans(string $tglAwal, string $tglAkhir): void
+{
+    $client   = new Client();
+    $baseUrl  = 'https://switcher.contoh.com/report/migrasi/pdambjm';
+    $token    = 'YOUR_TOKEN_HERE';
+    $perPage  = 1000;  // maksimal, untuk mempercepat proses
+    $page     = 1;
+    $lastPage = 1;
+    $imported = 0;
+
+    do {
+        $response = $client->get($baseUrl, [
+            'headers' => [
+                'report-token' => $token,
+                'Accept'       => 'application/json',
+            ],
+            'query' => [
+                'tgl_awal'  => $tglAwal,
+                'tgl_akhir' => $tglAkhir,
+                'page'      => $page,
+                'per_page'  => $perPage,
+            ],
+        ]);
+
+        $body = json_decode($response->getBody(), true);
+
+        if (!$body['status']) {
+            Log::error('Import gagal: ' . $body['message']);
+            break;
+        }
+
+        $rows     = $body['data'];
+        $lastPage = $body['pagination']['last_page'];
+
+        // Insert atau upsert ke tabel tujuan di web kasir
+        // Gunakan transaction_code sebagai kunci unik untuk menghindari duplikasi
+        foreach ($rows as $row) {
+            DB::table('pdambjm_trans')->updateOrInsert(
+                ['transaction_code' => $row['transaction_code']],
+                $row
+            );
+        }
+
+        $imported += count($rows);
+        Log::info("Import halaman {$page}/{$lastPage} — total diproses: {$imported}");
+
+        $page++;
+
+    } while ($page <= $lastPage);
+
+    Log::info("Import selesai. Total: {$imported} transaksi.");
+}
+
+// Panggil untuk mengimport data 1 hari
+importPdambjmTrans('2024-01-01', '2024-01-01');
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
 ```
 
 ---
 
 ## Tips Performa
 
+<<<<<<< HEAD
 ### Index MySQL yang Disarankan
 
 Pastikan ada index pada kolom `transaction_date` di tabel `pdambjm_trans` di **kedua server**:
@@ -276,17 +375,62 @@ done
 ```
 
 Atau via PHP:
+=======
+### Di sisi server switcher (sumber data)
+
+1. **Pastikan ada index** pada kolom `transaction_date` di tabel `pdambjm_trans`:
+   ```sql
+   ALTER TABLE pdambjm_trans ADD INDEX idx_transaction_date (transaction_date);
+   ```
+   
+2. **Index komposit** untuk query dengan filter loket:
+   ```sql
+   ALTER TABLE pdambjm_trans ADD INDEX idx_date_loket (transaction_date, loket_code);
+   ```
+
+### Di sisi web kasir (tujuan import)
+
+3. **Nonaktifkan autocommit** dan bungkus insert dalam batch transaction:
+   ```php
+   DB::beginTransaction();
+   foreach (array_chunk($rows, 100) as $chunk) {
+       DB::table('pdambjm_trans')->insertOrIgnore($chunk);
+   }
+   DB::commit();
+   ```
+
+4. **Gunakan `insertOrIgnore`** (bukan `updateOrInsert`) jika data tujuan kosong — jauh lebih cepat untuk import awal.
+
+5. **Jalankan import via queue/job** agar tidak timeout, terutama untuk range tanggal yang panjang.
+
+---
+
+## Contoh: Import Range Tanggal Panjang (Migrasi Massal)
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
 
 ```php
 use Carbon\Carbon;
 
 $start = Carbon::parse('2023-01-01');
 $end   = Carbon::parse('2023-12-31');
+<<<<<<< HEAD
+=======
+
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a
 $current = $start->copy();
 
 while ($current <= $end) {
     $tgl = $current->format('Y-m-d');
+<<<<<<< HEAD
     \Artisan::call('migrasi:pdambjm', ['--date' => $tgl]);
     $current->addDay();
 }
 ```
+=======
+    importPdambjmTrans($tgl, $tgl);
+    $current->addDay();
+}
+```
+
+> **Catatan:** Proses per hari untuk memudahkan retry jika ada error, dan agar setiap request tetap dalam batas wajar.
+>>>>>>> ed304c7460b530a044b09fdaf47a97e31e2d323a

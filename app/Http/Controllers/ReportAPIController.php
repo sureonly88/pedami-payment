@@ -580,6 +580,89 @@ class ReportAPIController extends Controller
         });
     }
 
+    // =====================================================================
+    //  MIGRASI RAW DATA pdambjm_trans
+    // =====================================================================
+
+    /**
+     * GET /report/migrasi/pdambjm
+     *
+     * Ambil data lengkap (raw) dari tabel pdambjm_trans untuk keperluan migrasi
+     * ke web kasir. Data dikembalikan apa adanya tanpa transformasi format.
+     *
+     * Query Parameters:
+     *   - tgl_awal          (required) : format Y-m-d, filter transaction_date
+     *   - tgl_akhir         (required) : format Y-m-d, filter transaction_date
+     *   - loket_code        (optional) : kode loket, bisa koma-separated (misal: L001,L002)
+     *   - username          (optional) : filter berdasarkan username operator
+     *   - include_deleted   (optional) : 1 = sertakan data flag_transaksi='D', default 0
+     *   - page              (optional) : nomor halaman, default 1
+     *   - per_page          (optional) : jumlah per halaman, default 500, max 1000
+     */
+    public function migrasiPdambjm(Request $request)
+    {
+        $tanggal = $this->validateTanggal($request);
+        if (!$tanggal) {
+            return Response::json([
+                'status'        => false,
+                'response_code' => '4001',
+                'message'       => 'PARAMETER tgl_awal DAN tgl_akhir WAJIB DIISI',
+            ], 400);
+        }
+
+        [$tglAwal, $tglAkhir] = $tanggal;
+
+        $perPage        = min(max(1, (int) $request->input('per_page', 500)), 1000);
+        $page           = max(1, (int) $request->input('page', 1));
+        $includeDeleted = (bool) $request->input('include_deleted', 0);
+        $allowedLokets  = $this->getAllowedLokets($request);
+
+        $query = DB::table('pdambjm_trans')
+            ->whereBetween('transaction_date', [$tglAwal . ' 00:00:00', $tglAkhir . ' 23:59:59'])
+            ->orderBy('transaction_date', 'asc')
+            ->orderBy('id', 'asc');
+
+        if (!$includeDeleted) {
+            $query->where(function ($q) {
+                $q->whereNull('flag_transaksi')->orWhere('flag_transaksi', '!=', 'D');
+            });
+        }
+
+        $query = $this->buildExportLoketFilter($query, $allowedLokets, $request->input('loket_code'));
+        if ($query === null) {
+            return Response::json([
+                'status'        => false,
+                'response_code' => '4031',
+                'message'       => 'LOKET TIDAK DIIZINKAN',
+            ], 403);
+        }
+
+        if ($request->filled('username')) {
+            $query->where('username', $request->input('username'));
+        }
+
+        $total = (clone $query)->count();
+        $rows  = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+        return Response::json([
+            'status'        => true,
+            'response_code' => '0000',
+            'message'       => 'DATA MIGRASI PDAMBJM_TRANS',
+            'filter'        => [
+                'tgl_awal'        => $tglAwal,
+                'tgl_akhir'       => $tglAkhir,
+                'include_deleted' => $includeDeleted,
+            ],
+            'data'          => $rows,
+            'pagination'    => [
+                'current_page' => $page,
+                'per_page'     => $perPage,
+                'total'        => $total,
+                'last_page'    => max(1, (int) ceil($total / $perPage)),
+            ],
+        ], 200);
+    }
+
     private function doExportPlnPrepaid($tglAwal, $tglAkhir, $allowedLokets, $filterLoket, $page, $perPage)
     {
         $query = DB::table('transaksi_pln_prepaid')
