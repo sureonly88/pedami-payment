@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\SendAdvisePdambjm::class,
         \App\Console\Commands\SendEmailPdambjm::class,
         \App\Console\Commands\SendEmailSisaSaldo::class,
-        \App\Console\Commands\SendLoginLunasin::class
+        \App\Console\Commands\SendLoginLunasin::class,
+        \App\Console\Commands\MigrasiPdambjmHarian::class,
     ];
 
     /**
@@ -32,6 +33,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('advisePDAM:send')->dailyAt('03:00');
         $schedule->command('emailPdambjm:send')->dailyAt('04:00');
         $schedule->command('emailSisaSaldo:send')->dailyAt('04:30');
+        // Migrasi otomatis data PDAM dari server switcher (jalankan setiap hari jam 00:15)
+        $schedule->command('migrasi:pdambjm')->dailyAt('00:15');
         //$schedule->command('emailPdambjm:send')->everyMinute();
         //$schedule->command('loginLunasin:send')->cron('0 */3 * * *');
         //0 */3 * * *

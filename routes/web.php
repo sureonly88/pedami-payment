@@ -214,6 +214,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth'] ], function()
     Route::post('import_pdambjm/upload', 'ImportPdambjmController@upload')->middleware('manageTrx');
     Route::post('import_pdambjm/proses', 'ImportPdambjmController@proses')->middleware('manageTrx');
 
+    // Migrasi data PDAM dari server switcher (manual via web UI)
+    Route::get('migrasi_pdambjm', 'MigrasiPdambjmController@index')->middleware('manageTrx');
+    Route::post('migrasi_pdambjm/jalankan', 'MigrasiPdambjmController@jalankan')->middleware('manageTrx');
+
 });
 
 Route::group(['prefix' => 'printing'], function()
