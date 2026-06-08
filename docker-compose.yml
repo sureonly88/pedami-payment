@@ -53,14 +53,14 @@ services:
       - "traefik.http.services.ppob-svc.loadbalancer.server.port=80"
 
       # Router HTTP → redirect ke HTTPS
-      - "traefik.http.routers.ppob-http.rule=Host(`gateway.paymentpedami.com`)"
+      - "traefik.http.routers.ppob-http.rule=Host(`ppob-baru.paymentpedami.com`)"
       - "traefik.http.routers.ppob-http.entrypoints=web"
       - "traefik.http.middlewares.ppob-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.ppob-http.middlewares=ppob-redirect"
       - "traefik.http.routers.ppob-http.service=ppob-svc"
 
       # Router HTTPS (tautkan eksplisit ke service)
-      - "traefik.http.routers.ppob-https.rule=Host(`gateway.paymentpedami.com`)"
+      - "traefik.http.routers.ppob-https.rule=Host(`ppob-baru.paymentpedami.com`)"
       - "traefik.http.routers.ppob-https.entrypoints=websecure"
       - "traefik.http.routers.ppob-https.tls=true"
       - "traefik.http.routers.ppob-https.tls.certresolver=letsencrypt"
@@ -119,13 +119,13 @@ services:
       - "traefik.docker.network=dokploy-network"
       - "traefik.http.services.pma-svc.loadbalancer.server.port=80"
 
-      - "traefik.http.routers.pma-http.rule=Host(`pma-gateway.paymentpedami.com`)"
+      - "traefik.http.routers.pma-http.rule=Host(`pma.paymentpedami.com`)"
       - "traefik.http.routers.pma-http.entrypoints=web"
       - "traefik.http.middlewares.pma-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.pma-http.middlewares=pma-redirect"
       - "traefik.http.routers.pma-http.service=pma-svc"
 
-      - "traefik.http.routers.pma-https.rule=Host(`pma-gateway.paymentpedami.com`)"
+      - "traefik.http.routers.pma-https.rule=Host(`pma.paymentpedami.com`)"
       - "traefik.http.routers.pma-https.entrypoints=websecure"
       - "traefik.http.routers.pma-https.tls=true"
       - "traefik.http.routers.pma-https.tls.certresolver=letsencrypt"
