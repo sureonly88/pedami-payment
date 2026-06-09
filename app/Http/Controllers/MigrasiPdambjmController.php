@@ -185,13 +185,19 @@ class MigrasiPdambjmController extends Controller
                         // Hapus id switcher agar tidak conflict dengan auto-increment lokal
                         unset($row['id']);
 
-                        if (empty($row['transaction_code'])) {
+                        // Key unik: cust_id + blth
+                        // Satu pelanggan hanya boleh punya 1 catatan per periode tagihan.
+                        // Ini menangani kasus pembayaran tunggakan (1 transaction_code = beberapa blth).
+                        if (empty($row['cust_id']) || empty($row['blth'])) {
                             $totalSkip++;
                             continue;
                         }
 
                         DB::table('pdambjm_trans')->updateOrInsert(
-                            ['transaction_code' => $row['transaction_code']],
+                            [
+                                'cust_id' => $row['cust_id'],
+                                'blth'    => $row['blth'],
+                            ],
                             $row
                         );
 
