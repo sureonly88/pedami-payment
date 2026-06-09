@@ -20,11 +20,8 @@ class MigrasiPdambjmController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-
         return view('admin.migrasi_pdambjm', [
-            'user'           => $user,
-            'switcher_url'   => rtrim(env('MIGRASI_SWITCHER_URL', 'https://gateway.paymentpedami.com'), '/'),
+            'switcher_url' => rtrim(env('MIGRASI_SWITCHER_URL', 'https://gateway.paymentpedami.com'), '/'),
         ]);
     }
 
