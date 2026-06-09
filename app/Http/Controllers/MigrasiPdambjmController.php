@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Response;
 use Carbon\Carbon;
 
@@ -27,57 +28,81 @@ class MigrasiPdambjmController extends Controller
 
     /**
      * Jalankan migrasi via AJAX.
-     * Mengambil data dari API switcher per halaman dan meng-upsert ke pdambjm_trans lokal.
-     *
      * POST /admin/migrasi_pdambjm/jalankan
+     *
+     * Selalu mengembalikan HTTP 200 dengan JSON berisi status true/false
+     * agar AJAX success handler yang menangani semua hasil (termasuk error).
      */
     public function jalankan(Request $request)
     {
-        $tglAwal  = $request->input('tgl_awal');
-        $tglAkhir = $request->input('tgl_akhir');
+        try {
+            $tglAwal  = $request->input('tgl_awal');
+            $tglAkhir = $request->input('tgl_akhir');
 
-        if (!$tglAwal || !$tglAkhir) {
+            if (!$tglAwal || !$tglAkhir) {
+                return Response::json([
+                    'status'  => false,
+                    'message' => 'tgl_awal dan tgl_akhir wajib diisi.',
+                    'errors'  => ['tgl_awal dan tgl_akhir wajib diisi.'],
+                ], 200);
+            }
+
+            if (!$this->isValidDate($tglAwal) || !$this->isValidDate($tglAkhir)) {
+                return Response::json([
+                    'status'  => false,
+                    'message' => 'Format tanggal tidak valid. Gunakan Y-m-d.',
+                    'errors'  => ['Format tanggal tidak valid. Gunakan Y-m-d.'],
+                ], 200);
+            }
+
+            if ($tglAwal > $tglAkhir) {
+                return Response::json([
+                    'status'  => false,
+                    'message' => 'tgl_awal tidak boleh lebih besar dari tgl_akhir.',
+                    'errors'  => ['tgl_awal tidak boleh lebih besar dari tgl_akhir.'],
+                ], 200);
+            }
+
+            $perPage        = min(max(1, (int) $request->input('per_page', 1000)), 1000);
+            $loketCode      = (string) $request->input('loket_code', '');
+            $includeDeleted = (int) $request->input('include_deleted', 0);
+
+            @set_time_limit(600);
+
+            $switcherUrl   = rtrim(env('MIGRASI_SWITCHER_URL', 'https://gateway.paymentpedami.com'), '/');
+            $switcherToken = (string) env('MIGRASI_SWITCHER_TOKEN', '');
+
+            if (!$switcherToken) {
+                return Response::json([
+                    'status'  => false,
+                    'message' => 'MIGRASI_SWITCHER_TOKEN belum dikonfigurasi di .env server kasir.',
+                    'errors'  => ['MIGRASI_SWITCHER_TOKEN belum dikonfigurasi di .env server kasir.'],
+                ], 200);
+            }
+
+            $result = self::runMigrasi(
+                $switcherUrl,
+                $switcherToken,
+                $tglAwal,
+                $tglAkhir,
+                $perPage,
+                $loketCode,
+                $includeDeleted
+            );
+
+            return Response::json($result, 200);
+
+        } catch (\Exception $e) {
             return Response::json([
-                'status'  => false,
-                'message' => 'tgl_awal dan tgl_akhir wajib diisi.',
-            ], 422);
+                'status'        => false,
+                'message'       => 'Exception: ' . $e->getMessage(),
+                'errors'        => [$e->getMessage()],
+                'total_fetched' => 0,
+                'total_upsert'  => 0,
+                'total_skip'    => 0,
+                'last_page'     => 0,
+            ], 200);
         }
-
-        // Validasi format tanggal
-        if (!$this->isValidDate($tglAwal) || !$this->isValidDate($tglAkhir)) {
-            return Response::json([
-                'status'  => false,
-                'message' => 'Format tanggal tidak valid. Gunakan Y-m-d.',
-            ], 422);
-        }
-
-        if ($tglAwal > $tglAkhir) {
-            return Response::json([
-                'status'  => false,
-                'message' => 'tgl_awal tidak boleh lebih besar dari tgl_akhir.',
-            ], 422);
-        }
-
-        $perPage        = min(max(1, (int) $request->input('per_page', 1000)), 1000);
-        $loketCode      = $request->input('loket_code', '');
-        $includeDeleted = (int) $request->input('include_deleted', 0);
-
-        set_time_limit(600); // 10 menit maksimal untuk request besar
-
-        $switcher_url   = rtrim(env('MIGRASI_SWITCHER_URL', 'https://gateway.paymentpedami.com'), '/');
-        $switcher_token = env('MIGRASI_SWITCHER_TOKEN', '');
-
-        $result = $this->runMigrasi(
-            $switcher_url,
-            $switcher_token,
-            $tglAwal,
-            $tglAkhir,
-            $perPage,
-            $loketCode,
-            $includeDeleted
-        );
-
-        return Response::json($result, $result['status'] ? 200 : 500);
     }
 
     /**
@@ -85,14 +110,14 @@ class MigrasiPdambjmController extends Controller
      * Method ini juga dipakai oleh Artisan Command.
      */
     public static function runMigrasi(
-        string $switcherUrl,
-        string $switcherToken,
-        string $tglAwal,
-        string $tglAkhir,
-        int    $perPage        = 1000,
-        string $loketCode      = '',
-        int    $includeDeleted = 0
-    ): array {
+        $switcherUrl,
+        $switcherToken,
+        $tglAwal,
+        $tglAkhir,
+        $perPage        = 1000,
+        $loketCode      = '',
+        $includeDeleted = 0
+    ) {
         $page         = 1;
         $lastPage     = 1;
         $totalFetched = 0;
@@ -118,9 +143,9 @@ class MigrasiPdambjmController extends Controller
 
             $ctx = stream_context_create([
                 'http' => [
-                    'method'  => 'GET',
-                    'header'  => "report-token: {$switcherToken}\r\nAccept: application/json\r\n",
-                    'timeout' => 60,
+                    'method'        => 'GET',
+                    'header'        => "report-token: {$switcherToken}\r\nAccept: application/json\r\n",
+                    'timeout'       => 60,
                     'ignore_errors' => true,
                 ],
                 'ssl' => [
@@ -132,38 +157,33 @@ class MigrasiPdambjmController extends Controller
             $raw = @file_get_contents($apiUrl, false, $ctx);
 
             if ($raw === false) {
-                $errors[] = "Halaman {$page}: Gagal menghubungi API switcher.";
+                $errors[] = "Halaman {$page}: Gagal menghubungi API switcher ({$apiUrl}).";
                 break;
             }
 
             $body = json_decode($raw, true);
 
-            if (!isset($body['status']) || $body['status'] !== true) {
-                $msg = isset($body['message']) ? $body['message'] : 'Response tidak valid dari API.';
+            if (!is_array($body) || empty($body['status'])) {
+                $msg = is_array($body) && isset($body['message']) ? $body['message'] : 'Response tidak valid dari API.';
                 $errors[] = "Halaman {$page}: {$msg}";
                 break;
             }
 
-            $rows     = $body['data']     ?? [];
-            $lastPage = $body['pagination']['last_page'] ?? 1;
+            $rows     = isset($body['data']) && is_array($body['data']) ? $body['data'] : [];
+            $lastPage = isset($body['pagination']['last_page']) ? (int) $body['pagination']['last_page'] : 1;
 
             $totalFetched += count($rows);
 
             // Batch upsert per 200 rows
             foreach (array_chunk($rows, 200) as $chunk) {
-                DB::beginTransaction();
                 try {
+                    DB::beginTransaction();
+
                     foreach ($chunk as $row) {
                         $row = (array) $row;
 
-                        // Hapus id agar tidak conflict dengan auto-increment lokal
-                        $switcherOriginalId = $row['id'] ?? null;
+                        // Hapus id switcher agar tidak conflict dengan auto-increment lokal
                         unset($row['id']);
-
-                        // Simpan reference id switcher jika kolom ada
-                        if ($switcherOriginalId !== null && self::columnExists('switcher_id')) {
-                            $row['switcher_id'] = $switcherOriginalId;
-                        }
 
                         if (empty($row['transaction_code'])) {
                             $totalSkip++;
@@ -177,11 +197,13 @@ class MigrasiPdambjmController extends Controller
 
                         $totalUpsert++;
                     }
+
                     DB::commit();
+
                 } catch (\Exception $e) {
-                    DB::rollBack();
+                    try { DB::rollBack(); } catch (\Exception $re) {}
                     $errors[] = "Halaman {$page}: Error batch — " . $e->getMessage();
-                    break 2; // keluar dari semua loop
+                    break 2;
                 }
             }
 
@@ -206,23 +228,9 @@ class MigrasiPdambjmController extends Controller
 
     // ─── helpers ─────────────────────────────────────────────────────────
 
-    private function isValidDate(string $date): bool
+    private function isValidDate($date)
     {
         $d = \DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') === $date;
-    }
-
-    /**
-     * Cek apakah kolom tertentu ada di tabel pdambjm_trans.
-     * Dijalankan sekali dan di-cache di memori per request.
-     */
-    private static $columnCache = null;
-
-    private static function columnExists(string $column): bool
-    {
-        if (self::$columnCache === null) {
-            self::$columnCache = DB::getSchemaBuilder()->getColumnListing('pdambjm_trans');
-        }
-        return in_array($column, self::$columnCache, true);
     }
 }

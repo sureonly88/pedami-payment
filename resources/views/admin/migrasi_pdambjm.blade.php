@@ -239,13 +239,26 @@ $(document).ready(function () {
             },
             timeout: 620000,  // 10 menit + buffer
             success: function (res) {
-                tampilHasil(res);
-                tambahRiwayat(res);
+                // Server selalu return 200, cek status di dalam JSON
+                if (res && res.status === true) {
+                    tampilHasil(res);
+                    tambahRiwayat(res);
+                } else {
+                    var errList = (res && res.errors && res.errors.length > 0)
+                        ? res.errors
+                        : [(res && res.message) ? res.message : 'Terjadi kesalahan pada server.'];
+                    tampilError(errList);
+                    if (res) tambahRiwayat(res);
+                }
             },
             error: function (xhr) {
                 var errMsg = 'Terjadi kesalahan pada server.';
                 try {
-                    errMsg = xhr.responseJSON.message || errMsg;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errMsg = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errMsg = xhr.responseJSON.errors.join('; ');
+                    }
                 } catch(e) {}
                 tampilError([errMsg]);
             },
