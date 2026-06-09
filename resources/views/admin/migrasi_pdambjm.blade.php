@@ -227,7 +227,7 @@ $(document).ready(function () {
         $("#txtProgressInfo").text('Menghubungi API switcher... harap tunggu.');
 
         $.ajax({
-            url    : '{{ url("admin/migrasi_pdambjm/jalankan") }}',
+            url    : '{{ secure_url("admin/migrasi_pdambjm/jalankan") }}',
             method : 'POST',
             data   : {
                 _token          : '{{ csrf_token() }}',
