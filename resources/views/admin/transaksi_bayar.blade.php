@@ -44,15 +44,7 @@ option {
 		    					<?php if (Auth::user()->hasPermissionTo('Transaksi Pdambjm')) { ?>
 								<option value="PDAMBJM" >PDAM BANDARMASIH</option>
 								<?php } ?>
-								<?php if (Auth::user()->hasPermissionTo('Transaksi PLN Postpaid')) { ?>
-								<option value="PLN_POSTPAID" >PLN POSTPAID</option>
-								<?php } ?>
-								<?php if (Auth::user()->hasPermissionTo('Transaksi PLN Prepaid')) { ?>
-								<option value="PLN_PREPAID" >PLN PREPAID</option>
-								<?php } ?>
-								<?php if (Auth::user()->hasPermissionTo('Transaksi PLN Nontaglis')) { ?>
-								<option value="PLN_NONTAG" >PLN NON TAGLIS</option>
-								<?php } ?>
+								
 								<?php if (Auth::user()->hasPermissionTo('PLN Pospaid Lunasin')) { ?>
 								<option value="PLN_POSTPAID_NEW" >PLN POSTPAID v2</option>
 								<?php } ?>
