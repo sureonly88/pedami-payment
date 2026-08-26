@@ -304,9 +304,13 @@ Route::group(['prefix' => 'mobile'], function()
 Route::group(['prefix' => 'gateway'], function()
 {
     // throttle_gateway:{max_attempts},{decay_minutes} — keyed by api-token per loket
-    Route::get('sisa_saldo','RekananAPIController@sisaSaldo')->middleware('api_rekanan','throttle_gateway:30,1');
-    Route::get('pdambjm/inquery/{idpel}','RekananAPIController@inquery')->middleware('api_rekanan','throttle_gateway:60,1');
-    Route::post('pdambjm/payment','RekananAPIController@payment')->middleware('api_rekanan','throttle_gateway:30,1');
+    // Route::get('sisa_saldo','RekananAPIController@sisaSaldo')->middleware('api_rekanan','throttle_gateway:30,1');
+    // Route::get('pdambjm/inquery/{idpel}','RekananAPIController@inquery')->middleware('api_rekanan','throttle_gateway:60,1');
+    // Route::post('pdambjm/payment','RekananAPIController@payment')->middleware('api_rekanan','throttle_gateway:30,1');
+
+    Route::get('sisa_saldo','RekananAPIController@sisaSaldo');
+    Route::get('pdambjm/inquery/{idpel}','RekananAPIController@inquery');
+    Route::post('pdambjm/payment','RekananAPIController@payment');
 });
 
 //ROUTE UNTUK API LAPORAN (TOKEN TERPISAH - header: report-token)
